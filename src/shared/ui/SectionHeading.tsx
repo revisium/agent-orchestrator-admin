@@ -4,8 +4,9 @@ interface SectionHeadingProps {
   readonly children: string
 }
 
+// Section title (.sec-head__title): h2 scale, semibold, ink.
 export const SectionHeading = ({ children }: SectionHeadingProps) => (
-  <Heading textStyle="semibold-md" color="text.1">
+  <Heading textStyle="semibold-md" letterSpacing="-0.01em" color="fg.0">
     {children}
   </Heading>
 )

@@ -177,7 +177,7 @@ export const CreateRunWizard = () => {
             size="sm"
             bg="brand.500"
             color="neutral.0"
-            _hover={{ bg: 'brand.600' }}
+            _hover={{ bg: 'brand.hover' }}
             disabled
             title="Prototype: submit is inert"
           >
@@ -188,7 +188,7 @@ export const CreateRunWizard = () => {
             size="sm"
             bg="brand.500"
             color="neutral.0"
-            _hover={{ bg: 'brand.600' }}
+            _hover={{ bg: 'brand.hover' }}
             onClick={() => setActive((step) => Math.min(LAST_STEP, step + 1))}
           >
             Next

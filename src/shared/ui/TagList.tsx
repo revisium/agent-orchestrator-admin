@@ -5,12 +5,12 @@ interface TagListProps {
   readonly emptyLabel?: string
 }
 
-// Wrapping list of monospace-ish neutral chips for string arrays such as
-// repos[], allowed_tools[], triggers[].
+// Wrapping list of neutral chips for string arrays such as repos[],
+// allowed_tools[], triggers[] (.tag in the prototype: inset bg, hairline).
 export const TagList = ({ items, emptyLabel = '—' }: TagListProps) => {
   if (items.length === 0) {
     return (
-      <Text textStyle="regular-sm" color="text.4">
+      <Text textStyle="regular-sm" color="fg.3">
         {emptyLabel}
       </Text>
     )
@@ -21,14 +21,16 @@ export const TagList = ({ items, emptyLabel = '—' }: TagListProps) => {
       {items.map((item) => (
         <WrapItem key={item}>
           <Badge
+            className="mono"
             textStyle="regular-xs"
             px="2"
             py="0.5"
-            borderRadius="md"
+            borderRadius="chip"
             borderWidth="1px"
-            color="text.2"
-            bg="neutral.100"
-            borderColor="neutral.200"
+            color="fg.1"
+            bg="bg.inset"
+            borderColor="border"
+            whiteSpace="nowrap"
           >
             {item}
           </Badge>

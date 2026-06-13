@@ -1,7 +1,17 @@
 import { Background, BackgroundVariant, Controls, Handle, Position, ReactFlow, ReactFlowProvider } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import type { Edge, Node, NodeProps, NodeTypes } from '@xyflow/react'
-import { gatePalette, neutralPalette, edgeColor, NODE_FONT_SIZE } from 'src/shared/ui'
+import {
+  dotgridColor,
+  edgeColor,
+  gatePalette,
+  NODE_FONT_SIZE,
+  nodeBorder,
+  nodeInk,
+  nodeShadow,
+  nodeSurface,
+  rolePalette,
+} from 'src/shared/ui'
 
 const ROW_Y = 60
 const COL_GAP = 190
@@ -14,22 +24,44 @@ interface RouteNodeData {
 }
 
 const RouteNode = ({ data }: NodeProps<Node<RouteNodeData>>) => {
-  const palette = data.kind === 'gate' ? gatePalette() : neutralPalette()
+  const isGate = data.kind === 'gate'
+  const accent = isGate ? gatePalette() : rolePalette()
   return (
     <div
       style={{
         padding: '8px 14px',
-        borderRadius: data.kind === 'gate' ? 9999 : 8,
-        border: `1px solid ${palette.border}`,
-        background: palette.bg,
-        color: palette.fg,
+        borderRadius: isGate ? 9999 : 8,
+        border: `1px solid ${isGate ? gatePalette().border : nodeBorder}`,
+        background: isGate ? gatePalette().bg : nodeSurface,
+        color: isGate ? gatePalette().fg : nodeInk,
         fontSize: NODE_FONT_SIZE.label,
         fontWeight: 600,
         fontFamily: 'Inter, sans-serif',
         whiteSpace: 'nowrap',
+        boxShadow: nodeShadow,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 7,
       }}
     >
       <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
+      {!isGate ? (
+        <span
+          style={{
+            width: 18,
+            height: 18,
+            borderRadius: 5,
+            display: 'grid',
+            placeItems: 'center',
+            color: accent.fg,
+            background: accent.bg,
+            border: `1px solid ${accent.border}`,
+            fontSize: NODE_FONT_SIZE.caption,
+          }}
+        >
+          {data.label.slice(0, 1).toUpperCase()}
+        </span>
+      ) : null}
       {data.label}
       <Handle type="source" position={Position.Right} style={{ opacity: 0 }} />
     </div>
@@ -71,7 +103,7 @@ const RoutePreviewFlow = () => (
     proOptions={{ hideAttribution: true }}
     nodesDraggable={false}
   >
-    <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#e2e8f0" />
+    <Background variant={BackgroundVariant.Dots} gap={18} size={1} color={dotgridColor} />
     <Controls showInteractive={false} />
   </ReactFlow>
 )

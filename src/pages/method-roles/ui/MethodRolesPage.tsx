@@ -5,7 +5,11 @@ import { RolesList } from 'src/widgets/RolesList'
 
 export const MethodRolesPage = () => (
   <Stack gap="6" maxW="800px">
-    <PageHeader title="Roles" description="Versioned role definitions the orchestrator routes work to." />
+    <PageHeader
+      eyebrow="The method"
+      title="Roles"
+      description="Versioned role definitions the orchestrator routes work to."
+    />
     <RolesList roles={ROLES} />
   </Stack>
 )

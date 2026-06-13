@@ -12,7 +12,11 @@ export const MethodPipelineDetailPage = ({ pipelineId }: MethodPipelineDetailPag
 
   return (
     <Stack gap="6">
-      <PageHeader title={pipeline.pipelineId} description="Pipeline route: roles, gates, and alternatives." />
+      <PageHeader
+        eyebrow="Pipeline"
+        title={pipeline.pipelineId}
+        description="Pipeline route: roles, gates, and alternatives."
+      />
       <Card>
         <Stack gap="1">
           <FieldRow label="Triggers">

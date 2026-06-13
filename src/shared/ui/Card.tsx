@@ -1,7 +1,8 @@
 import { Box } from '@chakra-ui/react'
 import type { BoxProps } from '@chakra-ui/react'
 
-// Neutral surface container used across dashboard, boards, and detail panels.
+// Warm surface container (.card in the prototype): bg.1 surface, hairline
+// border, card radius, sh-1 elevation.
 export const Card = (props: BoxProps) => (
-  <Box bg="neutral.0" borderWidth="1px" borderColor="neutral.200" borderRadius="lg" p="5" {...props} />
+  <Box bg="bg.1" borderWidth="1px" borderColor="border" borderRadius="card" boxShadow="sh-1" p="5" {...props} />
 )

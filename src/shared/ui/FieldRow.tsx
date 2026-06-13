@@ -6,16 +6,23 @@ interface FieldRowProps {
   readonly children: ReactNode
 }
 
-// Label/value pair for detail panels. Label is fixed-width so stacked rows
-// align into a definition-list grid without a real <dl>.
+// Label/value pair for detail panels (.field-row): muted fixed-width key, ink
+// value, hairline separator between rows.
 export const FieldRow = ({ label, children }: FieldRowProps) => (
-  <HStack align="start" gap="4" py="1.5">
-    <Text textStyle="medium-sm" color="text.3" minW="40" flexShrink="0">
+  <HStack
+    align="start"
+    gap="4"
+    py="2.5"
+    borderBottomWidth="1px"
+    borderColor="border.subtle"
+    _last={{ borderBottomWidth: '0' }}
+  >
+    <Text textStyle="regular-body" color="fg.2" minW="150px" flexShrink="0">
       {label}
     </Text>
     <Box flex="1" minW="0">
       {typeof children === 'string' ? (
-        <Text textStyle="regular-sm" color="text.1">
+        <Text textStyle="regular-body" color="fg.0">
           {children}
         </Text>
       ) : (

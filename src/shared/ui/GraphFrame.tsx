@@ -8,9 +8,17 @@ interface GraphFrameProps {
 
 // Bordered, SSR-safe surface for a client-only xyflow canvas. The server emits
 // this box with the spinner placeholder; the real graph mounts into it after
-// hydration. Shared by all three DAG widgets.
+// hydration. Warm surface + dotgrid background to match the prototype DAG frame.
 export const GraphFrame = ({ height, children }: GraphFrameProps) => (
-  <Box h={`${height}px`} w="full" borderWidth="1px" borderColor="neutral.200" borderRadius="md" bg="neutral.0">
+  <Box
+    className="dotgrid"
+    h={`${height}px`}
+    w="full"
+    borderWidth="1px"
+    borderColor="border"
+    borderRadius="card"
+    bg="bg.1"
+  >
     {children}
   </Box>
 )
