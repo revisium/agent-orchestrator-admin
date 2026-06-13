@@ -7,7 +7,9 @@ MobX, `@xyflow/react`, organized with Feature-Sliced Design (FSD).
 
 - React 19 + React Router v7 in SSR mode (`react-router.config.ts`).
 - Chakra UI v3 + Emotion; forced-light via Chakra props/system tokens (no color-mode toggle).
-- MobX + `mobx-react-lite` for view models; DI via `src/shared/lib/DIContainer`.
+- MobX + `mobx-react-lite` and the `src/shared/lib/DIContainer` infrastructure are
+  present from PR1 but NOT yet wired into the presentational prototype, which uses
+  local component state (`useState`) only — no view models yet.
 - `@xyflow/react` for run-progress graphs, isolated to `*.client.tsx` modules.
 - Vite 7 build; Vitest for unit tests; ESLint + Prettier + Steiger (FSD) gates.
 
@@ -25,10 +27,14 @@ src/
     method-pipeline-detail/ method-playbooks/ run-graph-smoke/
   widgets/                 Composite UI slices (ui/ + index.ts)
     Layout/                Nav shell with <Outlet/>
-    RunCard/ RunsBoard/ CreateRunWizard/ CostPanel/
+    RunsBoard/ CreateRunWizard/ CostPanel/
     InboxList/ GateResolutionPanel/
     RolesList/ PipelinesList/ PlaybooksList/
-    RunProgressGraph/ RoutePreviewGraph/ PipelineGraph/  xyflow DAGs (*.client.tsx)
+  features/                Reusable leaf slices (ui/ + index.ts)
+    RunCard/ RunProgressGraph/ RoutePreviewGraph/ PipelineGraph/
+    # imported by multiple widgets; widget->widget imports are FSD-forbidden,
+    # so these shared leaves drop to the lower features/ layer.
+    # RunProgressGraph/RoutePreviewGraph/PipelineGraph are xyflow DAGs (*.client.tsx).
   shared/
     lib/                   DIContainer, hooks (useViewModel/useService/useHydrated)
     ui/                    Theme, status tokens, presentational atoms, Toaster

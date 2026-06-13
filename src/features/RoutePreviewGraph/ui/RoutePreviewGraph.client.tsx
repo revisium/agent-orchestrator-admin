@@ -1,7 +1,7 @@
 import { Background, BackgroundVariant, Controls, Handle, Position, ReactFlow, ReactFlowProvider } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import type { Edge, Node, NodeProps, NodeTypes } from '@xyflow/react'
-import { gatePalette, neutralPalette, edgeColor } from 'src/shared/ui'
+import { gatePalette, neutralPalette, edgeColor, NODE_FONT_SIZE } from 'src/shared/ui'
 
 const ROW_Y = 60
 const COL_GAP = 190
@@ -23,7 +23,7 @@ const RouteNode = ({ data }: NodeProps<Node<RouteNodeData>>) => {
         border: `1px solid ${palette.border}`,
         background: palette.bg,
         color: palette.fg,
-        fontSize: 13,
+        fontSize: NODE_FONT_SIZE.label,
         fontWeight: 600,
         fontFamily: 'Inter, sans-serif',
         whiteSpace: 'nowrap',

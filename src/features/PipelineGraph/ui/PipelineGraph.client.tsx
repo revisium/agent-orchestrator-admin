@@ -1,7 +1,7 @@
 import { Background, BackgroundVariant, Controls, Handle, Position, ReactFlow, ReactFlowProvider } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import type { Edge, Node, NodeProps, NodeTypes } from '@xyflow/react'
-import { edgeColor, gatePalette, neutralPalette } from 'src/shared/ui'
+import { edgeColor, gatePalette, NODE_FONT_SIZE, neutralPalette } from 'src/shared/ui'
 import { playbookRouteRoles } from 'src/shared/fixtures'
 
 const ROW_Y = 80
@@ -32,9 +32,11 @@ const PipelineNode = ({ data }: NodeProps<Node<PipelineNodeData>>) => {
       }}
     >
       <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
-      <div style={{ fontSize: 13, fontWeight: 600 }}>{data.label}</div>
-      {data.optional ? <div style={{ fontSize: 10 }}>optional</div> : null}
-      {data.alternative ? <div style={{ fontSize: 10, fontStyle: 'italic' }}>alt: {data.alternative}</div> : null}
+      <div style={{ fontSize: NODE_FONT_SIZE.label, fontWeight: 600 }}>{data.label}</div>
+      {data.optional ? <div style={{ fontSize: NODE_FONT_SIZE.caption }}>optional</div> : null}
+      {data.alternative ? (
+        <div style={{ fontSize: NODE_FONT_SIZE.caption, fontStyle: 'italic' }}>alt: {data.alternative}</div>
+      ) : null}
       <Handle type="source" position={Position.Right} style={{ opacity: 0 }} />
     </div>
   )

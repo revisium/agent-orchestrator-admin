@@ -9,4 +9,11 @@ export { TagList } from './TagList'
 export { EmptyState } from './EmptyState'
 export { GraphFrame, GraphPlaceholder } from './GraphFrame'
 export { toneForStatus, labelForStatus, type StatusTone } from './statusTone'
-export { paletteForStatus, gatePalette, neutralPalette, edgeColor, type NodePalette } from './graphTokens'
+export {
+  paletteForStatus,
+  gatePalette,
+  neutralPalette,
+  edgeColor,
+  NODE_FONT_SIZE,
+  type NodePalette,
+} from './graphTokens'

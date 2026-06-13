@@ -1,7 +1,7 @@
 import { Background, BackgroundVariant, Controls, Handle, Position, ReactFlow, ReactFlowProvider } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import type { Edge, Node, NodeProps, NodeTypes } from '@xyflow/react'
-import { edgeColor, gatePalette, paletteForStatus } from 'src/shared/ui'
+import { edgeColor, gatePalette, NODE_FONT_SIZE, paletteForStatus } from 'src/shared/ui'
 import { RUN_STEPS } from 'src/shared/fixtures'
 
 const ROW_Y = 80
@@ -32,8 +32,8 @@ const StepFlowNode = ({ data }: NodeProps<Node<StepNodeData>>) => {
       }}
     >
       <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
-      <div style={{ fontSize: 13, fontWeight: 600 }}>{data.label}</div>
-      <div style={{ fontSize: 11, textTransform: 'capitalize' }}>{data.status.replace(/_/g, ' ')}</div>
+      <div style={{ fontSize: NODE_FONT_SIZE.label, fontWeight: 600 }}>{data.label}</div>
+      <div style={{ fontSize: NODE_FONT_SIZE.meta, textTransform: 'capitalize' }}>{data.status.replace(/_/g, ' ')}</div>
       <Handle type="source" position={Position.Right} style={{ opacity: 0 }} />
     </div>
   )
@@ -66,7 +66,7 @@ const loopEdge: Edge = {
   sourceHandle: null,
   targetHandle: null,
   style: { stroke: edgeColor, strokeDasharray: '4 4' },
-  labelStyle: { fontSize: 11, fill: '#6b758a' },
+  labelStyle: { fontSize: NODE_FONT_SIZE.meta, fill: '#6b758a' },
   pathOptions: { offset: LOOP_OFFSET },
 } as Edge
 

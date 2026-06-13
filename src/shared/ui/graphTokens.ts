@@ -27,3 +27,13 @@ export const gatePalette = (): NodePalette => ({
 export const neutralPalette = (): NodePalette => toneToken('neutral')
 
 export const edgeColor = system.token('colors.neutral.300')
+
+// xyflow renders raw DOM, so node label font sizes are inline `style` literals.
+// Centralize them here (like the color tokens above) so the DAGs stay
+// consistent. `label` is the primary node title; `meta` is the secondary line
+// (status / "optional" / "alt:" / edge labels).
+export const NODE_FONT_SIZE = {
+  label: 13,
+  meta: 11,
+  caption: 10,
+} as const
