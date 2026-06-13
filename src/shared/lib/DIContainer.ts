@@ -24,11 +24,14 @@ class DIContainer {
   public async stopSession(): Promise<void> {
     this.sessionActive = false
 
-    const pending: Array<void | Promise<void>> = []
+    const pending: Array<Promise<void>> = []
 
     for (const registration of this.registrations.values()) {
       if (registration.scope === 'session' && registration.instance) {
-        pending.push(registration.instance.unmount?.())
+        const result = registration.instance.unmount?.()
+        if (result instanceof Promise) {
+          pending.push(result)
+        }
         registration.instance = undefined
       }
     }

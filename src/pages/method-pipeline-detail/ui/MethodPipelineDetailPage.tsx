@@ -33,7 +33,7 @@ export const MethodPipelineDetailPage = ({ pipelineId }: MethodPipelineDetailPag
               <Stack direction="row" gap="2">
                 {pipeline.routeGates.map((gate) => (
                   <AccentBadge key={gate} kind="gate">
-                    {gate.replace(/_/g, ' ')}
+                    {gate.replaceAll('_', ' ')}
                   </AccentBadge>
                 ))}
               </Stack>

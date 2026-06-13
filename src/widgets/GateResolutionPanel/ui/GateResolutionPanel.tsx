@@ -62,7 +62,7 @@ const Controls = ({ item }: { readonly item: InboxItemDetail }) => {
       <Stack gap="3">
         <HStack gap="2">
           <SectionHeading>{question ? 'Answer' : 'Decision'}</SectionHeading>
-          <AccentBadge kind="gate">{item.gateType.replace(/_/g, ' ')}</AccentBadge>
+          <AccentBadge kind="gate">{item.gateType.replaceAll('_', ' ')}</AccentBadge>
         </HStack>
         {question ? (
           <Stack gap="3">

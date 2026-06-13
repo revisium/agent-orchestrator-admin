@@ -31,7 +31,7 @@ export const PipelinesList = ({ pipelines }: PipelinesListProps) => (
             <HStack gap="2">
               {pipeline.routeGates.map((gate) => (
                 <AccentBadge key={gate} kind="gate">
-                  {gate.replace(/_/g, ' ')}
+                  {gate.replaceAll('_', ' ')}
                 </AccentBadge>
               ))}
             </HStack>

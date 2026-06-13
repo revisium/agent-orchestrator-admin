@@ -33,7 +33,9 @@ const StepFlowNode = ({ data }: NodeProps<Node<StepNodeData>>) => {
     >
       <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
       <div style={{ fontSize: NODE_FONT_SIZE.label, fontWeight: 600 }}>{data.label}</div>
-      <div style={{ fontSize: NODE_FONT_SIZE.meta, textTransform: 'capitalize' }}>{data.status.replace(/_/g, ' ')}</div>
+      <div style={{ fontSize: NODE_FONT_SIZE.meta, textTransform: 'capitalize' }}>
+        {data.status.replaceAll('_', ' ')}
+      </div>
       <Handle type="source" position={Position.Right} style={{ opacity: 0 }} />
     </div>
   )

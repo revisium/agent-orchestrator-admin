@@ -26,4 +26,4 @@ const TONE_BY_STATUS: Record<string, StatusTone> = {
 export const toneForStatus = (status: string): StatusTone => TONE_BY_STATUS[status] ?? 'neutral'
 
 // Human label for a snake_case status token.
-export const labelForStatus = (status: string): string => status.replace(/_/g, ' ')
+export const labelForStatus = (status: string): string => status.replaceAll('_', ' ')
