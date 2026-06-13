@@ -30,6 +30,7 @@ export {
   nodeInk,
   nodeMeta,
   checkColor,
+  checkInk,
   NODE_FONT_SIZE,
   type NodePalette,
 } from './graphTokens'

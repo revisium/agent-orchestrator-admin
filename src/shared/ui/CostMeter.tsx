@@ -1,4 +1,11 @@
 import { Box, HStack, Stack, Text } from '@chakra-ui/react'
+import { system } from './theme/theme'
+
+// Hatch stripes for the estimate bar, resolved from brand tokens (not raw hex)
+// so the meter stays token-driven, matching graphTokens.ts.
+const hatchBorder = system.token('colors.brand.softBorder')
+const hatchFill = system.token('colors.brand.soft')
+const estimateHatch = `repeating-linear-gradient(45deg, ${hatchBorder}, ${hatchBorder} 4px, ${hatchFill} 4px, ${hatchFill} 8px)`
 
 interface CostMeterProps {
   readonly spent: number
@@ -19,13 +26,7 @@ export const CostMeter = ({ spent, limit, estimate = 0 }: CostMeterProps) => {
     <Stack gap="2">
       <HStack gap="0" h="2" borderRadius="pill" bg="bg.inset" borderWidth="1px" borderColor="border" overflow="hidden">
         <Box h="full" w={`${spentPct}%`} bg="brand.500" />
-        {estPct > 0 ? (
-          <Box
-            h="full"
-            w={`${estPct}%`}
-            backgroundImage="repeating-linear-gradient(45deg, #e9b29c, #e9b29c 4px, #f6ddd2 4px, #f6ddd2 8px)"
-          />
-        ) : null}
+        {estPct > 0 ? <Box h="full" w={`${estPct}%`} backgroundImage={estimateHatch} /> : null}
       </HStack>
       <HStack gap="4" textStyle="regular-xs" color="fg.2" wrap="wrap">
         <Text className="mono">

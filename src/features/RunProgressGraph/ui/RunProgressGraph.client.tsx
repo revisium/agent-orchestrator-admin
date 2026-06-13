@@ -3,6 +3,7 @@ import '@xyflow/react/dist/style.css'
 import type { Edge, Node, NodeProps, NodeTypes } from '@xyflow/react'
 import {
   checkColor,
+  checkInk,
   currentBorder,
   currentRing,
   dotColor,
@@ -89,7 +90,7 @@ const StepFlowNode = ({ data }: NodeProps<Node<StepNodeData>>) => {
                 height: 13,
                 borderRadius: '50%',
                 background: checkColor,
-                color: '#fff',
+                color: checkInk,
                 display: 'grid',
                 placeItems: 'center',
                 fontSize: 8,

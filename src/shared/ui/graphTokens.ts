@@ -52,6 +52,8 @@ export const dotgridColor = system.token('colors.border.strong')
 export const nodeInk = system.token('colors.fg.0')
 export const nodeMeta = system.token('colors.fg.2')
 export const checkColor = system.token('colors.dot.success')
+// Ink drawn on top of brand fills (e.g. the done-badge ✓) — tokenized white.
+export const checkInk = system.token('colors.brand.on')
 
 // xyflow renders raw DOM, so node label font sizes are inline `style` literals.
 // Centralize them here (like the color tokens above) so the DAGs stay
