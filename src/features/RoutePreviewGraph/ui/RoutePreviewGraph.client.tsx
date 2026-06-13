@@ -45,7 +45,7 @@ const RouteNode = ({ data }: NodeProps<Node<RouteNodeData>>) => {
       }}
     >
       <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
-      {!isGate ? (
+      {isGate ? null : (
         <span
           style={{
             width: 18,
@@ -61,7 +61,7 @@ const RouteNode = ({ data }: NodeProps<Node<RouteNodeData>>) => {
         >
           {data.label.slice(0, 1).toUpperCase()}
         </span>
-      ) : null}
+      )}
       {data.label}
       <Handle type="source" position={Position.Right} style={{ opacity: 0 }} />
     </div>
