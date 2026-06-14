@@ -43,7 +43,13 @@ export const StatCard = ({ def, count }: { readonly def: StatDef; readonly count
           <Center boxSize="32px" borderRadius="9px" bg={`status.${def.tone}.bg`} color={`status.${def.tone}.fg`}>
             <Icon size={16} />
           </Center>
-          <Box color="fg.3" opacity="0" transition="opacity 150ms" _groupHover={{ opacity: 1 }}>
+          <Box
+            color="fg.3"
+            opacity="0"
+            transform="translateX(0)"
+            transition="opacity 150ms, transform 150ms"
+            _groupHover={{ opacity: 1, transform: 'translateX(2px)' }}
+          >
             <ArrowRight size={15} />
           </Box>
         </Box>
