@@ -1,4 +1,5 @@
 import type { RunStatus } from './types'
+import { TASK_RUNS } from './runs'
 
 export interface HostStatus {
   readonly host: string
@@ -31,3 +32,10 @@ export const RUN_STATUS_COUNTS: ReadonlyArray<{ readonly status: RunStatus; read
   { status: 'paused', count: 0 },
   { status: 'cancelled', count: 1 },
 ]
+
+// Latest runs for the dashboard "Recent runs" list (slice limit kept here so the
+// magic-number-strict app code stays literal-free).
+export const RECENT_RUNS = TASK_RUNS.slice(0, 5)
+
+export const statusCount = (status: RunStatus): number =>
+  RUN_STATUS_COUNTS.find((bucket) => bucket.status === status)?.count ?? 0

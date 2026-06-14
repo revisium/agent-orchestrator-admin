@@ -5,23 +5,25 @@ interface StatusBadgeProps {
   readonly status: string
   readonly tone?: StatusTone
   readonly dot?: boolean
+  readonly size?: 'sm' | 'md'
 }
 
 // Token-driven status chip (.chip in the prototype): tinted fg/bg/border from
 // `status.*`, a leading solid tone dot from `dot.*`, chip radius, capitalized.
-export const StatusBadge = ({ status, tone, dot = true }: StatusBadgeProps) => {
+export const StatusBadge = ({ status, tone, dot = true, size = 'md' }: StatusBadgeProps) => {
   const resolved = tone ?? toneForStatus(status)
+  const sm = size === 'sm'
 
   return (
     <HStack
       as="span"
       display="inline-flex"
       gap="1.5"
-      h="6"
-      px="2.5"
+      h={sm ? '5' : '6'}
+      px={sm ? '2' : '2.5'}
       borderRadius="chip"
       borderWidth="1px"
-      textStyle="medium-sm"
+      textStyle={sm ? 'medium-xs' : 'medium-sm'}
       textTransform="capitalize"
       whiteSpace="nowrap"
       color={`status.${resolved}.fg`}

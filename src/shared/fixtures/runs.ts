@@ -11,6 +11,8 @@ export const TASK_RUNS: ReadonlyArray<TaskRun> = [
     priority: 'high',
     createdBy: 'kap',
     createdAt: '2026-06-13T09:12:00Z',
+    progress: { done: 2, total: 6 },
+    spend: 0.93,
   },
   {
     id: 'run_4c71',
@@ -22,6 +24,8 @@ export const TASK_RUNS: ReadonlyArray<TaskRun> = [
     priority: 'high',
     createdBy: 'kap',
     createdAt: '2026-06-12T17:40:00Z',
+    progress: { done: 4, total: 5 },
+    spend: 1.74,
   },
   {
     id: 'run_1d09',
@@ -33,6 +37,8 @@ export const TASK_RUNS: ReadonlyArray<TaskRun> = [
     priority: 'normal',
     createdBy: 'orchestrator',
     createdAt: '2026-06-11T08:05:00Z',
+    progress: { done: 4, total: 4 },
+    spend: 2.18,
   },
   {
     id: 'run_a35e',
@@ -44,6 +50,8 @@ export const TASK_RUNS: ReadonlyArray<TaskRun> = [
     priority: 'normal',
     createdBy: 'orchestrator',
     createdAt: '2026-06-10T14:22:00Z',
+    progress: { done: 3, total: 5 },
+    spend: 0.61,
   },
   {
     id: 'run_6b88',
@@ -55,6 +63,8 @@ export const TASK_RUNS: ReadonlyArray<TaskRun> = [
     priority: 'low',
     createdBy: 'kap',
     createdAt: '2026-06-13T11:48:00Z',
+    progress: { done: 1, total: 4 },
+    spend: 0.08,
   },
   {
     id: 'run_0f12',
@@ -66,6 +76,8 @@ export const TASK_RUNS: ReadonlyArray<TaskRun> = [
     priority: 'low',
     createdBy: 'kap',
     createdAt: '2026-06-09T10:00:00Z',
+    progress: { done: 1, total: 3 },
+    spend: 0.2,
   },
 ]
 

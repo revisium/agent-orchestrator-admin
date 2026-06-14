@@ -1,84 +1,106 @@
-import { Box, Grid, HStack, SimpleGrid, Stack, Text } from '@chakra-ui/react'
-import { Card, FieldRow, PageHeader, SectionHeading, StatusBadge } from 'src/shared/ui'
-import { HOST_STATUS, RUN_STATUS_COUNTS, TASK_RUNS } from 'src/shared/fixtures'
-import { RunCard } from 'src/features/RunCard'
+import { Box, Button, Link as ChakraLink, Flex, Grid, HStack, SimpleGrid, Stack, Text } from '@chakra-ui/react'
+import { ArrowRight, CircleCheck, DoorOpen, Play, RefreshCw, TriangleAlert } from 'lucide-react'
+import { Link } from 'react-router'
+import { PENDING_INBOX, PENDING_QUEUE, RECENT_RUNS, statusCount } from 'src/shared/fixtures'
+import { PageHeader, SectionHeading } from 'src/shared/ui'
+import { DecideCallout } from './DecideCallout'
+import { HostStatusCard } from './HostStatusCard'
+import { MiniQueue } from './MiniQueue'
+import { RecentRunRow } from './RecentRunRow'
+import { StatCard, type StatDef } from './StatCard'
 
-const RECENT_RUNS_LIMIT = 4
+const STAT_DEFS: ReadonlyArray<StatDef> = [
+  { key: 'running', label: 'Running', tone: 'running', icon: Play, hint: 'agents active now', to: '/runs' },
+  {
+    key: 'awaiting_approval',
+    label: 'Awaiting approval',
+    tone: 'waiting',
+    icon: DoorOpen,
+    hint: 'gates need you',
+    to: '/inbox',
+    accent: true,
+  },
+  {
+    key: 'completed',
+    label: 'Completed today',
+    tone: 'success',
+    icon: CircleCheck,
+    hint: 'merged & closed',
+    to: '/runs',
+  },
+  { key: 'failed', label: 'Failed', tone: 'failed', icon: TriangleAlert, hint: 'in last 24h', to: '/runs' },
+]
 
-const HostStatusCard = () => (
-  <Card>
-    <Stack gap="3">
-      <SectionHeading>Host status</SectionHeading>
-      <Stack gap="0">
-        <FieldRow label="Host">
-          <HStack gap="2">
-            <Box w="2" h="2" borderRadius="full" bg="status.success.fg" />
-            <Text textStyle="regular-sm" color="text.1">
-              {HOST_STATUS.host}
-            </Text>
-          </HStack>
-        </FieldRow>
-        <FieldRow label="Daemon">
-          <StatusBadge status={HOST_STATUS.daemonUp ? 'running' : 'failed'} />
-        </FieldRow>
-        <FieldRow label="DBOS">
-          <StatusBadge status={HOST_STATUS.dbosConnected ? 'completed' : 'failed'} />
-        </FieldRow>
-        <FieldRow label="Control plane">{HOST_STATUS.controlPlane}</FieldRow>
-        <FieldRow label="Playbook">{HOST_STATUS.playbookVersion}</FieldRow>
-      </Stack>
-    </Stack>
-  </Card>
+const Eyebrow = (
+  <HStack gap="2" align="center">
+    <Box boxSize="2" borderRadius="full" bg="brand.500" />
+    <Text as="span">Control room · all projects</Text>
+  </HStack>
 )
 
-const RunsSummaryStrip = () => (
-  <Card>
-    <Stack gap="3">
-      <SectionHeading>Runs by status</SectionHeading>
-      <SimpleGrid columns={{ base: 2, md: 3, xl: 5 }} gap="3">
-        {RUN_STATUS_COUNTS.map((bucket) => (
-          <Stack
-            key={bucket.status}
-            gap="1.5"
-            p="3"
-            borderWidth="1px"
-            borderColor="border"
-            borderRadius="card"
-            bg="bg.inset"
-          >
-            <Text className="tnum" textStyle="bold-lg" color="fg.0">
-              {bucket.count}
-            </Text>
-            <StatusBadge status={bucket.status} />
-          </Stack>
-        ))}
-      </SimpleGrid>
-    </Stack>
-  </Card>
-)
-
-const RecentRunsList = () => (
-  <Stack gap="3">
-    <SectionHeading>Recent runs</SectionHeading>
-    <Stack gap="3">
-      {TASK_RUNS.slice(0, RECENT_RUNS_LIMIT).map((run) => (
-        <RunCard key={run.id} run={run} />
-      ))}
-    </Stack>
-  </Stack>
+const RefreshButton = (
+  <Button
+    size="sm"
+    h="36px"
+    px="3.5"
+    gap="2"
+    bg="transparent"
+    color="fg.1"
+    borderRadius="btn"
+    _hover={{ bg: 'blackAlpha.50', color: 'fg.0' }}
+  >
+    <RefreshCw size={15} />
+    Refresh
+  </Button>
 )
 
 export const DashboardPage = () => (
-  <Stack gap="6">
+  <Stack gap="7">
     <PageHeader
-      eyebrow="Control room"
+      eyebrow={Eyebrow}
       title="Dashboard"
-      description="Live state of the orchestrator host, runs, and control plane."
+      description="Calm control over the local orchestrator — what's running, what needs you, what it cost."
+      actions={RefreshButton}
     />
-    <Grid templateColumns={{ base: '1fr', xl: '360px 1fr' }} gap="4" alignItems="start">
-      <HostStatusCard />
-      <RunsSummaryStrip />
+
+    <HostStatusCard />
+
+    <SimpleGrid columns={{ base: 1, sm: 2, xl: 4 }} gap="4">
+      {STAT_DEFS.map((def) => (
+        <StatCard key={def.key} def={def} count={statusCount(def.key)} />
+      ))}
+    </SimpleGrid>
+
+    <Grid templateColumns={{ base: '1fr', lg: '1.7fr 1fr' }} gap={{ base: '6', lg: '7' }} alignItems="start">
+      <Stack gap="3.5">
+        <Flex align="flex-end" justify="space-between" gap="4">
+          <Box>
+            <SectionHeading>Recent runs</SectionHeading>
+            <Text textStyle="regular-sm" color="fg.2">
+              Latest task runs across all repos
+            </Text>
+          </Box>
+          <ChakraLink asChild color="fg.2" textStyle="medium-sm" _hover={{ color: 'fg.0', textDecoration: 'none' }}>
+            <Link to="/runs">
+              <HStack gap="1.5">
+                <Text>View all</Text>
+                <ArrowRight size={14} />
+              </HStack>
+            </Link>
+          </ChakraLink>
+        </Flex>
+        <Box bg="bg.1" borderWidth="1px" borderColor="border" borderRadius="card" boxShadow="sh-1" overflow="hidden">
+          {RECENT_RUNS.map((run) => (
+            <RecentRunRow key={run.id} run={run} />
+          ))}
+        </Box>
+      </Stack>
+
+      <Stack gap="3.5">
+        <SectionHeading>Pending decisions</SectionHeading>
+        <DecideCallout count={PENDING_INBOX.length} />
+        <MiniQueue items={PENDING_QUEUE} />
+      </Stack>
     </Grid>
-    <RecentRunsList />
   </Stack>
 )

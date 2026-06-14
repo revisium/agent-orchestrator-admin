@@ -34,6 +34,8 @@ export interface TaskRun {
   readonly priority: 'low' | 'normal' | 'high'
   readonly createdBy: string
   readonly createdAt: string
+  readonly progress: { readonly done: number; readonly total: number }
+  readonly spend: number
 }
 
 export interface RunEvent {
