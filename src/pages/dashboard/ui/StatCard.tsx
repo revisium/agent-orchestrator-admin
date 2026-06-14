@@ -19,7 +19,7 @@ export const StatCard = ({ def, count }: { readonly def: StatDef; readonly count
   return (
     <ChakraLink
       asChild
-      role="group"
+      className="group"
       display="block"
       bg={def.accent ? undefined : 'bg.1'}
       bgGradient={def.accent ? 'to-b' : undefined}

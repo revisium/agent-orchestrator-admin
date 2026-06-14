@@ -46,15 +46,17 @@ export const RecentRunRow = ({ run }: { readonly run: TaskRun }) => (
             </Text>
           </HStack>
         </Box>
-        <Box display={{ base: 'none', lg: 'block' }} flexShrink="0">
+        <Flex display={{ base: 'none', lg: 'flex' }} w="112px" justify="flex-end" flexShrink="0">
           <MiniStepper done={run.progress.done} total={run.progress.total} status={run.status} />
-        </Box>
-        <StatusBadge status={run.status} size="sm" />
+        </Flex>
+        <Flex w={{ base: 'auto', sm: '150px' }} flexShrink="0">
+          <StatusBadge status={run.status} size="sm" />
+        </Flex>
         <Text className="mono tnum" textStyle="medium-sm" color="fg.1" w="14" textAlign="right" flexShrink="0">
           {formatUsd(run.spend)}
         </Text>
         <Text
-          display={{ base: 'none', sm: 'block' }}
+          display={{ base: 'none', md: 'block' }}
           textStyle="regular-xs"
           color="fg.3"
           w="16"
