@@ -71,7 +71,11 @@ export const DashboardPage = () => (
       ))}
     </SimpleGrid>
 
-    <Grid templateColumns={{ base: '1fr', lg: '1.7fr 1fr' }} gap={{ base: '6', lg: '7' }} alignItems="start">
+    <Grid
+      templateColumns={{ base: '1fr', xl: 'minmax(0, 2fr) minmax(0, 1fr)' }}
+      gap={{ base: '6', xl: '8' }}
+      alignItems="start"
+    >
       <Stack gap="3.5">
         <Flex align="flex-end" justify="space-between" gap="4">
           <Box>
