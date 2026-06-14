@@ -86,3 +86,8 @@ const ITEM_DETAILS: Record<string, InboxItemDetail> = {
 }
 
 export const inboxItemById = (itemId: string): InboxItemDetail => ITEM_DETAILS[itemId] ?? ITEM_DETAILS.ibx_plan_01
+
+// Pending decisions for the dashboard side column (slice limit kept here to keep
+// app code literal-free).
+export const PENDING_INBOX = INBOX_ITEMS.filter((item) => item.status === 'pending')
+export const PENDING_QUEUE = PENDING_INBOX.slice(0, 3)
