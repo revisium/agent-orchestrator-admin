@@ -46,22 +46,35 @@ export const RecentRunRow = ({ run }: { readonly run: TaskRun }) => (
             </Text>
           </HStack>
         </Box>
-        <Flex display={{ base: 'none', lg: 'flex' }} w="112px" justify="flex-end" flexShrink="0">
+        <Flex
+          w="112px"
+          justify="flex-end"
+          flexShrink="0"
+          css={{ '@container (max-width: 520px)': { display: 'none' } }}
+        >
           <MiniStepper done={run.progress.done} total={run.progress.total} status={run.status} />
         </Flex>
-        <Flex w={{ base: 'auto', sm: '150px' }} flexShrink="0">
+        <Flex w="150px" flexShrink="0" css={{ '@container (max-width: 460px)': { width: 'auto' } }}>
           <StatusBadge status={run.status} size="sm" />
         </Flex>
-        <Text className="mono tnum" textStyle="medium-sm" color="fg.1" w="14" textAlign="right" flexShrink="0">
+        <Text
+          className="mono tnum"
+          textStyle="medium-sm"
+          color="fg.1"
+          w="14"
+          textAlign="right"
+          flexShrink="0"
+          css={{ '@container (max-width: 380px)': { display: 'none' } }}
+        >
           {formatUsd(run.spend)}
         </Text>
         <Text
-          display={{ base: 'none', md: 'block' }}
           textStyle="regular-xs"
           color="fg.3"
           w="16"
           textAlign="right"
           flexShrink="0"
+          css={{ '@container (max-width: 620px)': { display: 'none' } }}
         >
           {relTime(run.createdAt)}
         </Text>
