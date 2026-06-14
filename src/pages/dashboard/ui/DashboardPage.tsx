@@ -39,14 +39,14 @@ const RunsSummaryStrip = () => (
         {RUN_STATUS_COUNTS.map((bucket) => (
           <Stack
             key={bucket.status}
-            gap="1"
+            gap="1.5"
             p="3"
             borderWidth="1px"
-            borderColor="neutral.200"
-            borderRadius="md"
-            bg="neutral.100"
+            borderColor="border"
+            borderRadius="card"
+            bg="bg.inset"
           >
-            <Text textStyle="semibold-lg" color="text.1">
+            <Text className="tnum" textStyle="bold-lg" color="fg.0">
               {bucket.count}
             </Text>
             <StatusBadge status={bucket.status} />
@@ -70,7 +70,11 @@ const RecentRunsList = () => (
 
 export const DashboardPage = () => (
   <Stack gap="6">
-    <PageHeader title="Dashboard" description="Live state of the orchestrator host, runs, and control plane." />
+    <PageHeader
+      eyebrow="Control room"
+      title="Dashboard"
+      description="Live state of the orchestrator host, runs, and control plane."
+    />
     <Grid templateColumns={{ base: '1fr', xl: '360px 1fr' }} gap="4" alignItems="start">
       <HostStatusCard />
       <RunsSummaryStrip />

@@ -7,11 +7,12 @@ import { RunsBoard } from 'src/widgets/RunsBoard'
 export const RunsBoardPage = () => (
   <Stack gap="6">
     <PageHeader
+      eyebrow="Task runs"
       title="Runs"
       description="Every task run routed through the orchestrator."
       actions={
-        <Button asChild size="sm" bg="brand.500" color="neutral.0" _hover={{ bg: 'brand.600' }}>
-          <Link to="/runs/new">New run</Link>
+        <Button asChild size="sm" bg="brand.500" color="brand.on" borderRadius="btn" _hover={{ bg: 'brand.hover' }}>
+          <Link to="/runs/new">+ New run</Link>
         </Button>
       }
     />

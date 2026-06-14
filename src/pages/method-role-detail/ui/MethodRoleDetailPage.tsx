@@ -1,5 +1,5 @@
-import { Box, Stack, Text } from '@chakra-ui/react'
-import { AccentBadge, Card, FieldRow, PageHeader, SectionHeading, TagList } from 'src/shared/ui'
+import { Box, HStack, Stack, Text } from '@chakra-ui/react'
+import { AccentBadge, Card, FieldRow, ModelChip, PageHeader, RoleToken, SectionHeading, TagList } from 'src/shared/ui'
 import { roleById } from 'src/shared/fixtures'
 
 interface MethodRoleDetailPageProps {
@@ -11,10 +11,21 @@ export const MethodRoleDetailPage = ({ roleId }: MethodRoleDetailPageProps) => {
 
   return (
     <Stack gap="6" maxW="800px">
-      <PageHeader title={role.name} description={`role · ${role.surface}`} />
+      <PageHeader
+        eyebrow={
+          <HStack gap="2">
+            <RoleToken name={role.name} size={18} />
+            <Text>role</Text>
+          </HStack>
+        }
+        title={role.name}
+        description={`Surface: ${role.surface}`}
+      />
       <Card>
         <Stack gap="1">
-          <FieldRow label="Model level">{role.modelLevel}</FieldRow>
+          <FieldRow label="Model level">
+            <ModelChip level={role.modelLevel} />
+          </FieldRow>
           <FieldRow label="Effort">{role.effort}</FieldRow>
           <FieldRow label="Runner">{role.runner}</FieldRow>
           <FieldRow label="Scope">{role.scope}</FieldRow>
@@ -31,8 +42,8 @@ export const MethodRoleDetailPage = ({ roleId }: MethodRoleDetailPageProps) => {
       <Card>
         <Stack gap="3">
           <SectionHeading>System prompt</SectionHeading>
-          <Box bg="neutral.100" borderRadius="md" p="4" borderWidth="1px" borderColor="neutral.200">
-            <Text textStyle="regular-sm" color="text.2" whiteSpace="pre-wrap">
+          <Box className="mono" bg="bg.inset" borderRadius="card" p="4" borderWidth="1px" borderColor="border">
+            <Text textStyle="regular-sm" color="fg.1" whiteSpace="pre-wrap">
               {role.systemPromptPreview}
             </Text>
           </Box>

@@ -1,7 +1,18 @@
 import { Background, BackgroundVariant, Controls, Handle, Position, ReactFlow, ReactFlowProvider } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import type { Edge, Node, NodeProps, NodeTypes } from '@xyflow/react'
-import { edgeColor, gatePalette, NODE_FONT_SIZE, neutralPalette } from 'src/shared/ui'
+import {
+  dotgridColor,
+  edgeColor,
+  gatePalette,
+  NODE_FONT_SIZE,
+  nodeBorder,
+  nodeInk,
+  nodeMeta,
+  nodeShadow,
+  nodeSurface,
+  rolePalette,
+} from 'src/shared/ui'
 import { playbookRouteRoles } from 'src/shared/fixtures'
 
 const ROW_Y = 80
@@ -17,25 +28,43 @@ interface PipelineNodeData {
 }
 
 const PipelineNode = ({ data }: NodeProps<Node<PipelineNodeData>>) => {
-  const palette = data.kind === 'gate' ? gatePalette() : neutralPalette()
+  const isGate = data.kind === 'gate'
+  const gate = gatePalette()
+  const gateBg = data.optional ? nodeSurface : gate.bg
   return (
     <div
       style={{
+        position: 'relative',
         padding: '8px 14px',
-        borderRadius: data.kind === 'gate' ? 9999 : 8,
-        border: `${data.optional ? '1px dashed' : '1px solid'} ${palette.border}`,
-        background: palette.bg,
-        color: palette.fg,
+        borderRadius: isGate ? 9999 : 8,
+        border: `${data.optional ? '1px dashed' : '1px solid'} ${isGate ? gate.border : nodeBorder}`,
+        background: isGate ? gateBg : nodeSurface,
+        color: isGate ? gate.fg : nodeInk,
         fontFamily: 'Inter, sans-serif',
         textAlign: 'center',
         minWidth: 110,
+        opacity: data.optional ? 0.82 : 1,
+        boxShadow: nodeShadow,
       }}
     >
       <Handle type="target" position={Position.Left} style={{ opacity: 0 }} />
       <div style={{ fontSize: NODE_FONT_SIZE.label, fontWeight: 600 }}>{data.label}</div>
-      {data.optional ? <div style={{ fontSize: NODE_FONT_SIZE.caption }}>optional</div> : null}
+      {data.optional ? (
+        <div
+          style={{
+            fontSize: NODE_FONT_SIZE.caption,
+            color: nodeMeta,
+            textTransform: 'uppercase',
+            letterSpacing: '.05em',
+          }}
+        >
+          optional
+        </div>
+      ) : null}
       {data.alternative ? (
-        <div style={{ fontSize: NODE_FONT_SIZE.caption, fontStyle: 'italic' }}>alt: {data.alternative}</div>
+        <div style={{ fontSize: NODE_FONT_SIZE.caption, color: rolePalette().fg, fontStyle: 'italic' }}>
+          alt: {data.alternative}
+        </div>
       ) : null}
       <Handle type="source" position={Position.Right} style={{ opacity: 0 }} />
     </div>
@@ -80,7 +109,7 @@ const PipelineFlow = () => (
     proOptions={{ hideAttribution: true }}
     nodesDraggable={false}
   >
-    <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#e2e8f0" />
+    <Background variant={BackgroundVariant.Dots} gap={18} size={1} color={dotgridColor} />
     <Controls showInteractive={false} />
   </ReactFlow>
 )

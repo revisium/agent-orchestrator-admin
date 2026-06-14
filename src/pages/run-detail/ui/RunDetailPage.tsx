@@ -115,7 +115,7 @@ const EventsTab = () => (
     <SectionHeading>Events</SectionHeading>
     <Stack gap="2">
       {RUN_EVENTS.map((event) => (
-        <Box key={event.id} borderWidth="1px" borderColor="neutral.200" borderRadius="md" p="3" bg="neutral.0">
+        <Box key={event.id} borderWidth="1px" borderColor="border" borderRadius="card" p="3" bg="bg.1">
           <HStack gap="3" justify="space-between">
             <Text textStyle="medium-xs" color="text.2">
               {event.type}
@@ -140,7 +140,7 @@ export const RunDetailPage = ({ runId }: RunDetailPageProps) => {
 
   return (
     <Stack gap="6">
-      <PageHeader title="Run detail" description={run.id} />
+      <PageHeader eyebrow="Run" title="Run detail" description={run.id} />
       <RunDetailHeader run={run} />
       <Card>
         <Tabs.Root defaultValue="timeline" variant="line">

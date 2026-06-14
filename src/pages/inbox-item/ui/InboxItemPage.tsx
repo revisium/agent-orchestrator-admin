@@ -15,7 +15,7 @@ export const InboxItemPage = ({ itemId }: InboxItemPageProps) => {
 
   return (
     <Stack gap="6" maxW="800px">
-      <PageHeader title={item.title} description={`${item.id} · run `} />
+      <PageHeader eyebrow="Resolve gate" title={item.title} description={`${item.id} · ${item.runId}`} />
       <HStack gap="3">
         <AccentBadge kind={kindAccent(item.kind)}>{item.kind}</AccentBadge>
         <StatusBadge status={item.status} />

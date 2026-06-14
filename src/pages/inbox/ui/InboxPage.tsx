@@ -12,24 +12,30 @@ export const InboxPage = () => {
 
   return (
     <Stack gap="6" maxW="800px">
-      <PageHeader title="Inbox" description="The single human queue: approvals, questions, and alerts." />
+      <PageHeader
+        eyebrow="Decisions"
+        title="Inbox"
+        description="The single human queue: approvals, questions, and alerts."
+      />
       <HStack gap="2">
         <Button
           size="xs"
+          borderRadius="btn"
           variant={filter === 'pending' ? 'solid' : 'outline'}
-          bg={filter === 'pending' ? 'brand.500' : 'neutral.0'}
-          color={filter === 'pending' ? 'neutral.0' : 'text.2'}
-          borderColor="neutral.300"
+          bg={filter === 'pending' ? 'brand.500' : 'bg.1'}
+          color={filter === 'pending' ? 'brand.on' : 'fg.1'}
+          borderColor="border.strong"
           onClick={() => setFilter('pending')}
         >
           Pending
         </Button>
         <Button
           size="xs"
+          borderRadius="btn"
           variant={filter === 'all' ? 'solid' : 'outline'}
-          bg={filter === 'all' ? 'brand.500' : 'neutral.0'}
-          color={filter === 'all' ? 'neutral.0' : 'text.2'}
-          borderColor="neutral.300"
+          bg={filter === 'all' ? 'brand.500' : 'bg.1'}
+          color={filter === 'all' ? 'brand.on' : 'fg.1'}
+          borderColor="border.strong"
           onClick={() => setFilter('all')}
         >
           All

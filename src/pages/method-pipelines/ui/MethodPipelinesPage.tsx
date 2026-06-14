@@ -5,7 +5,11 @@ import { PipelinesList } from 'src/widgets/PipelinesList'
 
 export const MethodPipelinesPage = () => (
   <Stack gap="6" maxW="800px">
-    <PageHeader title="Pipelines" description="Imported pipeline definitions: triggers, roles, and route gates." />
+    <PageHeader
+      eyebrow="The method"
+      title="Pipelines"
+      description="Imported pipeline definitions: triggers, roles, and route gates."
+    />
     <PipelinesList pipelines={PIPELINES} />
   </Stack>
 )

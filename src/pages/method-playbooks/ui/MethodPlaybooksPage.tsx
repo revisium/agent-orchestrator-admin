@@ -5,7 +5,11 @@ import { PlaybooksList } from 'src/widgets/PlaybooksList'
 
 export const MethodPlaybooksPage = () => (
   <Stack gap="6">
-    <PageHeader title="Playbooks" description="Installed playbook packages and their catalog versions." />
+    <PageHeader
+      eyebrow="The method"
+      title="Playbooks"
+      description="Installed playbook packages and their catalog versions."
+    />
     <Card p="4">
       <PlaybooksList playbooks={PLAYBOOKS} />
     </Card>
