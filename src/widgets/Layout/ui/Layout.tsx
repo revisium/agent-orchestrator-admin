@@ -7,6 +7,7 @@ import {
   Flex,
   HStack,
   Link as ChakraLink,
+  Menu,
   Portal,
   Span,
   Stack,
@@ -14,20 +15,24 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import {
+  ArrowRight,
   ChevronLeft,
+  ChevronDown,
   ChevronRight,
+  Check,
   Folder,
   Inbox,
   LayoutDashboard,
+  Layers,
   List,
   type LucideIcon,
-  Menu,
+  Menu as MenuIcon,
   Plus,
   Scan,
   Search,
   X,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Link, Outlet, useLocation } from 'react-router'
 import { HOST_STATUS, INBOX_ITEMS } from 'src/shared/fixtures'
 import { BrandLogo } from 'src/shared/ui'
@@ -52,6 +57,12 @@ const NAV_ITEMS: ReadonlyArray<NavItem> = [
   { label: 'Projects', to: '/projects', match: '/projects', icon: Folder, disabled: true },
   { label: 'Method', to: '/method/roles', match: '/method', icon: Scan },
 ]
+
+const PROJECT_ITEMS = [
+  { id: 'orchestrator', label: 'Orchestrator', initials: 'or', tone: 'failed' },
+  { id: 'schema', label: 'Schema Platform', initials: 'sc', tone: 'role' },
+  { id: 'strategy', label: 'Strategy & Docs', initials: 'st', tone: 'waiting' },
+] as const
 
 const isActive = (pathname: string, match: string): boolean =>
   match === '/' ? pathname === '/' : pathname === match || pathname.startsWith(`${match}/`)
@@ -87,6 +98,215 @@ const BrandWord = () => (
     </Text>
   </HStack>
 )
+
+const ProjectAvatar = ({
+  initials,
+  tone,
+  size = '26px',
+}: {
+  readonly initials: string
+  readonly tone: 'all' | 'failed' | 'role' | 'waiting' | 'system'
+  readonly size?: string
+}) => {
+  if (tone === 'all' || tone === 'system') {
+    return (
+      <Center
+        boxSize={size}
+        borderRadius="8px"
+        bg="bg.inset"
+        color={tone === 'all' ? 'brand.500' : 'fg.2'}
+        borderWidth="1px"
+        borderColor="border.strong"
+        flexShrink="0"
+      >
+        {tone === 'all' ? <Layers size={15} /> : <Scan size={15} />}
+      </Center>
+    )
+  }
+
+  const color =
+    tone === 'role'
+      ? { bg: 'accent.role.bg', fg: 'accent.role.fg', border: 'accent.role.border' }
+      : { bg: `status.${tone}.bg`, fg: `status.${tone}.fg`, border: `status.${tone}.border` }
+
+  return (
+    <Center
+      boxSize={size}
+      borderRadius="8px"
+      bg={color.bg}
+      color={color.fg}
+      borderWidth="1px"
+      borderColor={color.border}
+      textStyle="semibold-xs"
+      textTransform="lowercase"
+      flexShrink="0"
+    >
+      {initials}
+    </Center>
+  )
+}
+
+const ProjectMenuRow = ({
+  active,
+  children,
+  onSelect,
+  value,
+}: {
+  readonly active?: boolean
+  readonly children: ReactNode
+  readonly onSelect?: () => void
+  readonly value: string
+}) => (
+  <Menu.Item
+    value={value}
+    onClick={onSelect}
+    display="flex"
+    alignItems="center"
+    gap="2.5"
+    w="full"
+    px="2.5"
+    py="2"
+    borderRadius="8px"
+    bg={active ? 'brand.soft' : 'transparent'}
+    color="fg.1"
+    _highlighted={{ bg: active ? 'brand.soft' : 'brand.tint' }}
+  >
+    {children}
+  </Menu.Item>
+)
+
+const ProjectSwitcher = ({ collapsed }: { readonly collapsed: boolean }) => {
+  const [projectId, setProjectId] = useState('all')
+  const allProjectsSelected = projectId === 'all'
+
+  return (
+    <Menu.Root positioning={{ placement: 'bottom-start' }}>
+      <Box px="3" pb="2.5" position="relative">
+        <Menu.Trigger asChild>
+          <Button
+            w="full"
+            h={collapsed ? '42px' : '46px'}
+            px={collapsed ? '0' : '2.5'}
+            justifyContent={collapsed ? 'center' : 'flex-start'}
+            gap="2.5"
+            bg="bg.1"
+            color="fg.0"
+            borderWidth="1px"
+            borderColor="border"
+            borderRadius="9px"
+            boxShadow="none"
+            _hover={{ bg: 'bg.2', borderColor: 'border.strong' }}
+            _expanded={{ bg: 'bg.2', borderColor: 'border.strong', boxShadow: 'sh-glow' }}
+            title={collapsed ? 'Switch project' : undefined}
+          >
+            <ProjectAvatar initials="all" tone="all" />
+            {collapsed ? null : (
+              <>
+                <Stack gap="0" flex="1" minW="0" align="flex-start">
+                  <Text textStyle="semibold-sm" color="fg.0" truncate>
+                    All projects
+                  </Text>
+                  <Text className="mono" textStyle="regular-xs" color="fg.3" truncate>
+                    agent-orchestration
+                  </Text>
+                </Stack>
+                <Box color="fg.3" flexShrink="0">
+                  <ChevronDown size={15} />
+                </Box>
+              </>
+            )}
+          </Button>
+        </Menu.Trigger>
+      </Box>
+      <Portal>
+        <Menu.Positioner>
+          <Menu.Content
+            w="204px"
+            p="1.5"
+            bg="bg.2"
+            borderWidth="1px"
+            borderColor="border.strong"
+            borderRadius="11px"
+            boxShadow="sh-3"
+          >
+            <Text
+              px="2.5"
+              pt="1.5"
+              pb="1"
+              color="fg.3"
+              fontSize="10.5px"
+              fontWeight="650"
+              textTransform="uppercase"
+              letterSpacing=".05em"
+            >
+              Workspace · agent-orchestration
+            </Text>
+            <ProjectMenuRow value="all" active={allProjectsSelected} onSelect={() => setProjectId('all')}>
+              <ProjectAvatar initials="all" tone="all" size="22px" />
+              <Text flex="1" textStyle="semibold-sm" color="fg.0">
+                All projects
+              </Text>
+              {allProjectsSelected ? (
+                <Box color="brand.500">
+                  <Check size={15} />
+                </Box>
+              ) : null}
+            </ProjectMenuRow>
+            {PROJECT_ITEMS.map((project) => (
+              <ProjectMenuRow
+                key={project.id}
+                value={project.id}
+                active={projectId === project.id}
+                onSelect={() => setProjectId(project.id)}
+              >
+                <ProjectAvatar initials={project.initials} tone={project.tone} size="22px" />
+                <Text flex="1" textStyle="semibold-sm" color="fg.0">
+                  {project.label}
+                </Text>
+                {projectId === project.id ? (
+                  <Box color="brand.500">
+                    <Check size={15} />
+                  </Box>
+                ) : null}
+              </ProjectMenuRow>
+            ))}
+            <Box h="1px" bg="border.subtle" mx="1" my="1.5" />
+            <ProjectMenuRow value="control-plane">
+              <ProjectAvatar initials="sys" tone="system" size="22px" />
+              <Stack gap="0" flex="1" minW="0">
+                <Text textStyle="semibold-sm" color="fg.0">
+                  Control plane
+                </Text>
+                <Span
+                  alignSelf="flex-start"
+                  px="1.5"
+                  borderRadius="4px"
+                  bg="bg.inset"
+                  color="fg.3"
+                  fontSize="9.5px"
+                  fontWeight="650"
+                  textTransform="uppercase"
+                  letterSpacing=".04em"
+                >
+                  System
+                </Span>
+              </Stack>
+              <Box color="fg.3">
+                <ArrowRight size={14} />
+              </Box>
+            </ProjectMenuRow>
+            <ProjectMenuRow value="browse-projects">
+              <Plus size={15} />
+              <Text flex="1" textStyle="semibold-sm" color="fg.0">
+                Browse all projects
+              </Text>
+            </ProjectMenuRow>
+          </Menu.Content>
+        </Menu.Positioner>
+      </Portal>
+    </Menu.Root>
+  )
+}
 
 const Avatar = () => (
   <Center
@@ -348,6 +568,7 @@ const Sidebar = ({
           {toggle}
         </HStack>
       )}
+      <ProjectSwitcher collapsed={collapsed} />
       <NavRail pathname={pathname} collapsed={collapsed} />
       <HostPill collapsed={collapsed} />
     </Flex>
@@ -492,7 +713,7 @@ const TopBar = ({ pathname, onMenuOpen }: { readonly pathname: string; readonly 
         title="Open menu"
         aria-label="Open menu"
       >
-        <Menu size={18} />
+        <MenuIcon size={18} />
       </IconButton>
       <HStack display={{ base: 'none', sm: 'flex' }} gap="4" textStyle="regular-body" color="fg.2" minW="0">
         <ChakraLink asChild color="fg.2" _hover={{ color: 'fg.0', textDecoration: 'none' }}>
