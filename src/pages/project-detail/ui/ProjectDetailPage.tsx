@@ -1,12 +1,27 @@
 import { Box, Button, Center, Grid, HStack, Link as ChakraLink, Span, Stack, Text } from '@chakra-ui/react'
-import { ArrowRight, BookOpen, ChevronDown, Cpu, GitBranch, History, Layers3, Plus } from 'lucide-react'
+import {
+  ArrowRight,
+  BookOpen,
+  ChevronDown,
+  Cpu,
+  Database,
+  FileText,
+  GitBranch,
+  History,
+  Layers3,
+  Plus,
+} from 'lucide-react'
 import type { ReactNode } from 'react'
 import { Link } from 'react-router'
 import {
   absTime,
+  adrsForProject,
+  knowledgeForProject,
   projectById,
   reposForProject,
   runsForProject,
+  type ProjectAdr,
+  type ProjectKnowledgeArticle,
   type ProjectRepository,
   type ProjectRow,
   type ProjectTone,
@@ -23,6 +38,8 @@ interface DetailTab {
   readonly label: string
   readonly count?: number
 }
+
+const RECENT_ADR_LIMIT = 3
 
 const projectToneStyles = (
   tone: ProjectTone,
@@ -250,6 +267,68 @@ const SectionHead = ({
   </HStack>
 )
 
+const TagPill = ({ children }: { readonly children: ReactNode }) => (
+  <Span
+    px="2"
+    py="0.5"
+    borderRadius="pill"
+    bg="bg.inset"
+    borderWidth="1px"
+    borderColor="border"
+    color="fg.2"
+    textStyle="regular-micro"
+    whiteSpace="nowrap"
+  >
+    {children}
+  </Span>
+)
+
+const AdrStatusBadge = ({ status }: { readonly status: ProjectAdr['status'] }) => {
+  const palette = {
+    accepted: { fg: 'status.success.fg', bg: 'status.success.bg', border: 'status.success.border' },
+    proposed: { fg: 'status.running.fg', bg: 'status.running.bg', border: 'status.running.border' },
+    superseded: { fg: 'fg.2', bg: 'bg.inset', border: 'border.strong' },
+  }[status]
+
+  return (
+    <Span
+      px="2"
+      h="5"
+      display="inline-flex"
+      alignItems="center"
+      borderRadius="chip"
+      borderWidth="1px"
+      color={palette.fg}
+      bg={palette.bg}
+      borderColor={palette.border}
+      textStyle="medium-xs"
+      textTransform="capitalize"
+      whiteSpace="nowrap"
+    >
+      {status}
+    </Span>
+  )
+}
+
+const KnowledgeSourceBadge = ({ source }: { readonly source: ProjectKnowledgeArticle['source'] }) => (
+  <Span
+    px="2"
+    h="5"
+    display="inline-flex"
+    alignItems="center"
+    borderRadius="chip"
+    borderWidth="1px"
+    color={source === 'method' ? 'brand.ink' : 'fg.2'}
+    bg={source === 'method' ? 'brand.soft' : 'bg.inset'}
+    borderColor={source === 'method' ? 'brand.softBorder' : 'border'}
+    textStyle="medium-xs"
+    textTransform="capitalize"
+    whiteSpace="nowrap"
+  >
+    {source}
+  </Span>
+)
+
 const RepoList = ({ repositories }: { readonly repositories: ReadonlyArray<ProjectRepository> }) => (
   <Card p="0" overflow="hidden">
     {repositories.map((repo) => (
@@ -271,6 +350,147 @@ const RepoList = ({ repositories }: { readonly repositories: ReadonlyArray<Proje
       </HStack>
     ))}
   </Card>
+)
+
+const AdrList = ({
+  adrs,
+  compact = false,
+}: {
+  readonly adrs: ReadonlyArray<ProjectAdr>
+  readonly compact?: boolean
+}) => (
+  <Card p="0" overflow="hidden">
+    {adrs.length === 0 ? (
+      <Box px="4" py="5">
+        <EmptyState title="No ADRs yet" description="Decision records will appear here once they are captured." />
+      </Box>
+    ) : (
+      adrs.map((adr) => (
+        <Grid
+          key={adr.id}
+          templateColumns={{ base: '1fr', lg: compact ? 'minmax(0, 1fr) auto' : 'minmax(0, 1fr) 170px 150px' }}
+          gap={{ base: '2.5', lg: '4' }}
+          px="4.5"
+          py="4"
+          alignItems="start"
+          borderBottomWidth="1px"
+          borderColor="border.subtle"
+          _last={{ borderBottomWidth: '0' }}
+        >
+          <HStack gap="3" align="start" minW="0">
+            <Center
+              boxSize="32px"
+              borderRadius="8px"
+              bg="brand.tint"
+              borderWidth="1px"
+              borderColor="brand.softBorder"
+              color="brand.500"
+              flexShrink="0"
+            >
+              <FileText size={15} />
+            </Center>
+            <Stack gap="1.5" minW="0">
+              <HStack gap="2" minW="0" wrap="wrap">
+                <Text className="mono" textStyle="regular-xs" color="fg.3">
+                  ADR-{adr.number}
+                </Text>
+                <Text textStyle="semibold-sm" color="fg.0">
+                  {adr.title}
+                </Text>
+              </HStack>
+              <Text textStyle="regular-sm" color="fg.2" lineHeight="1.5">
+                {adr.summary}
+              </Text>
+              <HStack gap="1.5" wrap="wrap">
+                {adr.tags.map((tag) => (
+                  <TagPill key={tag}>{tag}</TagPill>
+                ))}
+              </HStack>
+            </Stack>
+          </HStack>
+          <Stack gap="2" align={{ base: 'flex-start', lg: compact ? 'flex-end' : 'flex-start' }}>
+            <AdrStatusBadge status={adr.status} />
+            <Text className="mono" textStyle="regular-xs" color="fg.3">
+              {absTime(adr.createdAt)}
+            </Text>
+          </Stack>
+          {compact ? null : (
+            <Stack gap="1.5" align="flex-start" minW="0">
+              <Text className="mono" textStyle="regular-xs" color="fg.1" truncate>
+                {adr.repo}
+              </Text>
+              <ChakraLink
+                asChild
+                color="fg.2"
+                textStyle="medium-xs"
+                _hover={{ color: 'brand.500', textDecoration: 'none' }}
+              >
+                <Link to={`/runs/${adr.runId}`}>{adr.runId}</Link>
+              </ChakraLink>
+            </Stack>
+          )}
+        </Grid>
+      ))
+    )}
+  </Card>
+)
+
+const KnowledgeList = ({ articles }: { readonly articles: ReadonlyArray<ProjectKnowledgeArticle> }) => (
+  <Grid templateColumns={{ base: '1fr', xl: 'repeat(2, minmax(0, 1fr))' }} gap="4">
+    {articles.length === 0 ? (
+      <Box gridColumn="1 / -1">
+        <EmptyState title="No knowledge articles yet" description="Project knowledge will appear after ingestion." />
+      </Box>
+    ) : (
+      articles.map((article) => (
+        <Card key={article.id} p="4.5" minH="210px" display="flex" flexDirection="column">
+          <Stack gap="3" h="100%">
+            <HStack gap="3" align="start">
+              <Center
+                boxSize="32px"
+                borderRadius="8px"
+                bg="bg.inset"
+                borderWidth="1px"
+                borderColor="border"
+                color="fg.2"
+                flexShrink="0"
+              >
+                {article.source === 'memory' ? <Database size={15} /> : <BookOpen size={15} />}
+              </Center>
+              <Stack gap="1" minW="0" flex="1">
+                <HStack gap="2" wrap="wrap">
+                  <KnowledgeSourceBadge source={article.source} />
+                  <Text className="mono" textStyle="regular-xs" color="fg.3">
+                    {absTime(article.updatedAt)}
+                  </Text>
+                </HStack>
+                <Text textStyle="semibold-sm" color="fg.0">
+                  {article.title}
+                </Text>
+              </Stack>
+            </HStack>
+            <Text textStyle="regular-sm" color="fg.2" lineHeight="1.55">
+              {article.summary}
+            </Text>
+            <HStack gap="1.5" wrap="wrap">
+              {article.tags.map((tag) => (
+                <TagPill key={tag}>{tag}</TagPill>
+              ))}
+            </HStack>
+            <HStack mt="auto" pt="3" borderTopWidth="1px" borderColor="border.subtle" gap="3" minW="0">
+              <AvatarInitials label={article.owner} system={article.owner === 'orchestrator'} />
+              <Text className="mono" textStyle="regular-xs" color="fg.2">
+                {article.owner}
+              </Text>
+              <Text className="mono" textStyle="regular-xs" color="fg.3" ml="auto" truncate>
+                {article.repo}
+              </Text>
+            </HStack>
+          </Stack>
+        </Card>
+      ))
+    )}
+  </Grid>
 )
 
 const ProjectMeta = ({ project }: { readonly project: ProjectRow }) => (
@@ -343,9 +563,11 @@ const ActiveRuns = ({ project }: { readonly project: ProjectRow }) => {
 const OverviewTab = ({
   project,
   repositories,
+  adrs,
 }: {
   readonly project: ProjectRow
   readonly repositories: ReadonlyArray<ProjectRepository>
+  readonly adrs: ReadonlyArray<ProjectAdr>
 }) => (
   <Grid templateColumns={{ base: '1fr', xl: 'minmax(0, 1.7fr) minmax(280px, 1fr)' }} gap="7" alignItems="start">
     <Stack gap="6">
@@ -361,12 +583,7 @@ const OverviewTab = ({
       </Box>
       <Box>
         <SectionHead title="Recent decisions" to={`/projects/${project.id}/adrs`} action="All ADRs" />
-        <Card p="0" overflow="hidden">
-          <EmptyState
-            title="Decisions are coming next"
-            description="ADR rows will be wired in the next project pass."
-          />
-        </Card>
+        <AdrList adrs={adrs.slice(0, RECENT_ADR_LIMIT)} compact />
       </Box>
     </Stack>
     <Stack gap="5">
@@ -377,6 +594,20 @@ const OverviewTab = ({
       </Box>
     </Stack>
   </Grid>
+)
+
+const AdrsTab = ({ adrs }: { readonly adrs: ReadonlyArray<ProjectAdr> }) => (
+  <Stack gap="4">
+    <SectionHead title="Architecture decision records" />
+    <AdrList adrs={adrs} />
+  </Stack>
+)
+
+const KnowledgeTab = ({ articles }: { readonly articles: ReadonlyArray<ProjectKnowledgeArticle> }) => (
+  <Stack gap="4">
+    <SectionHead title="Knowledge base" />
+    <KnowledgeList articles={articles} />
+  </Stack>
 )
 
 const RepositoriesTab = ({ repositories }: { readonly repositories: ReadonlyArray<ProjectRepository> }) => (
@@ -472,6 +703,8 @@ const PlaceholderTab = ({ title }: { readonly title: string }) => (
 export const ProjectDetailPage = ({ projectId, tab }: ProjectDetailPageProps) => {
   const project = projectById(projectId)
   const repositories = reposForProject(project.id)
+  const adrs = adrsForProject(project.id)
+  const articles = knowledgeForProject(project.id)
   const activeTab = validTab(tab)
   const tabs = tabsForProject(project, repositories)
 
@@ -479,10 +712,10 @@ export const ProjectDetailPage = ({ projectId, tab }: ProjectDetailPageProps) =>
     <Stack gap="6">
       <DetailHeader project={project} />
       <DetailTabs project={project} tabs={tabs} activeTab={activeTab} />
-      {activeTab === 'overview' ? <OverviewTab project={project} repositories={repositories} /> : null}
+      {activeTab === 'overview' ? <OverviewTab project={project} repositories={repositories} adrs={adrs} /> : null}
       {activeTab === 'repositories' ? <RepositoriesTab repositories={repositories} /> : null}
-      {activeTab === 'knowledge' ? <PlaceholderTab title="Knowledge base" /> : null}
-      {activeTab === 'adrs' ? <PlaceholderTab title="ADRs" /> : null}
+      {activeTab === 'knowledge' ? <KnowledgeTab articles={articles} /> : null}
+      {activeTab === 'adrs' ? <AdrsTab adrs={adrs} /> : null}
       {activeTab === 'memory' ? <PlaceholderTab title="Memory" /> : null}
       {activeTab === 'activity' ? <PlaceholderTab title="Activity" /> : null}
     </Stack>

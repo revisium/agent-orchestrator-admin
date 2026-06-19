@@ -209,3 +209,29 @@ export interface ProjectRepository {
   readonly lastActivity: string
   readonly commits: number
 }
+
+export interface ProjectAdr {
+  readonly id: string
+  readonly projectId: string
+  readonly number: number
+  readonly title: string
+  readonly status: 'accepted' | 'proposed' | 'superseded'
+  readonly owner: string
+  readonly createdAt: string
+  readonly repo: string
+  readonly runId: string
+  readonly summary: string
+  readonly tags: ReadonlyArray<string>
+}
+
+export interface ProjectKnowledgeArticle {
+  readonly id: string
+  readonly projectId: string
+  readonly title: string
+  readonly source: 'method' | 'repo' | 'run' | 'memory'
+  readonly owner: string
+  readonly updatedAt: string
+  readonly repo: string
+  readonly summary: string
+  readonly tags: ReadonlyArray<string>
+}
