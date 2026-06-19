@@ -55,8 +55,7 @@ const ADR_LINKED_COUNTS: Readonly<Record<number, number>> = {
   2: 1,
   9: 1,
 }
-const ADR_TINTED_ROW_NUMBER = 9
-const ADR_TINTED_ROW_BG = '#fff1ec'
+const ADR_ROW_HOVER_BG = '#fff1ec'
 
 const projectToneStyles = (
   tone: ProjectTone,
@@ -581,8 +580,8 @@ const AdrList = ({ adrs }: { readonly adrs: ReadonlyArray<ProjectAdr> }) => (
       ) : (
         <>
           <Grid
-            templateColumns="112px minmax(0, 1fr) 118px 140px 142px 100px"
-            gap="3"
+            templateColumns="112px minmax(0, 1fr) 104px 124px 126px 86px"
+            gap="2.5"
             alignItems="center"
             h="40px"
             px="4.5"
@@ -610,15 +609,15 @@ const AdrList = ({ adrs }: { readonly adrs: ReadonlyArray<ProjectAdr> }) => (
             return (
               <Grid
                 key={adr.id}
-                templateColumns="112px minmax(0, 1fr) 118px 140px 142px 100px"
-                gap="3"
+                templateColumns="112px minmax(0, 1fr) 104px 124px 126px 86px"
+                gap="2.5"
                 alignItems="center"
                 px="4.5"
-                py="3"
-                minH="86px"
-                bg={adr.number === ADR_TINTED_ROW_NUMBER ? ADR_TINTED_ROW_BG : undefined}
+                py="2.5"
+                minH="72px"
                 borderBottomWidth="1px"
                 borderColor="border"
+                _hover={{ bg: ADR_ROW_HOVER_BG }}
                 _last={{ borderBottomWidth: '0' }}
                 css={{
                   '@container (max-width: 760px)': {
@@ -629,7 +628,7 @@ const AdrList = ({ adrs }: { readonly adrs: ReadonlyArray<ProjectAdr> }) => (
                 <Text className="mono" color="brand.500" textStyle="semibold-sm">
                   {formatAdrNumber(adr.number)}
                 </Text>
-                <Stack gap="1.5" minW="0">
+                <Stack gap="1" minW="0">
                   <Text color="fg.0" textStyle="semibold-sm" lineHeight="1.25">
                     {adr.title}
                   </Text>
