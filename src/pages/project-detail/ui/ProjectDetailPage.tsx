@@ -55,6 +55,8 @@ const ADR_LINKED_COUNTS: Readonly<Record<number, number>> = {
   2: 1,
   9: 1,
 }
+const ADR_TINTED_ROW_NUMBER = 9
+const ADR_TINTED_ROW_BG = '#fff1ec'
 
 const projectToneStyles = (
   tone: ProjectTone,
@@ -338,6 +340,7 @@ const AdrStatusBadge = ({
       h="5"
       display="inline-flex"
       alignItems="center"
+      width="fit-content"
       borderRadius="chip"
       borderWidth="1px"
       color={palette.fg}
@@ -395,6 +398,7 @@ const CompactDecisionStatus = ({ status }: { readonly status: ProjectAdr['status
       h="6"
       px="2.5"
       gap="1.5"
+      width="fit-content"
       borderRadius="chip"
       borderWidth="1px"
       color={palette.fg}
@@ -577,8 +581,8 @@ const AdrList = ({ adrs }: { readonly adrs: ReadonlyArray<ProjectAdr> }) => (
       ) : (
         <>
           <Grid
-            templateColumns="116px minmax(0, 1fr) 128px 150px 150px 110px"
-            gap="4"
+            templateColumns="112px minmax(0, 1fr) 118px 140px 142px 100px"
+            gap="3"
             alignItems="center"
             h="40px"
             px="4.5"
@@ -606,11 +610,13 @@ const AdrList = ({ adrs }: { readonly adrs: ReadonlyArray<ProjectAdr> }) => (
             return (
               <Grid
                 key={adr.id}
-                templateColumns="116px minmax(0, 1fr) 128px 150px 150px 110px"
-                gap="4"
+                templateColumns="112px minmax(0, 1fr) 118px 140px 142px 100px"
+                gap="3"
                 alignItems="center"
                 px="4.5"
-                py="3.5"
+                py="3"
+                minH="86px"
+                bg={adr.number === ADR_TINTED_ROW_NUMBER ? ADR_TINTED_ROW_BG : undefined}
                 borderBottomWidth="1px"
                 borderColor="border"
                 _last={{ borderBottomWidth: '0' }}
