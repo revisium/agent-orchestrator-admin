@@ -8,6 +8,7 @@ import {
   Database,
   FileText,
   GitBranch,
+  GitPullRequest,
   History,
   Layers3,
   Plus,
@@ -104,15 +105,15 @@ const DetailHeader = ({ project }: { readonly project: ProjectRow }) => <FlexHea
 const FlexHeader = ({ project }: { readonly project: ProjectRow }) => (
   <Grid templateColumns={{ base: '1fr', xl: 'minmax(0, 1fr) auto' }} gap="5" alignItems="start">
     <HStack gap="4" align="flex-start" minW="0">
-      <ProjectAvatar project={project} size="56px" />
-      <Stack gap="2" minW="0">
+      <ProjectAvatar project={project} size="50px" />
+      <Stack gap="1.5" minW="0">
         <HStack gap="3" align="baseline" wrap="wrap">
           <Text className="mono" textStyle="regular-sm" color="fg.3">
             {project.org} /
           </Text>
           <Text
             color="fg.0"
-            fontSize={{ base: '32px', lg: '30px' }}
+            fontSize={{ base: '28px', lg: '26px' }}
             fontWeight="720"
             lineHeight="1.08"
             letterSpacing="0"
@@ -161,10 +162,13 @@ const FlexHeader = ({ project }: { readonly project: ProjectRow }) => (
         h="34px"
         px="3.5"
         gap="2"
-        bg="brand.500"
-        color="brand.on"
+        bg="bg.1"
+        color="fg.0"
+        borderWidth="1px"
+        borderColor="border.strong"
         borderRadius="btn"
-        _hover={{ bg: 'brand.hover' }}
+        boxShadow="0 1px 2px rgba(33, 28, 20, 0.08)"
+        _hover={{ bg: 'blackAlpha.50' }}
       >
         <Plus size={14} />
         New ADR
@@ -206,10 +210,12 @@ const DetailTabs = ({
           flexShrink="0"
           borderBottomWidth="2px"
           borderColor={active ? 'brand.500' : 'transparent'}
+          bg={active ? 'bg.1' : 'transparent'}
           color={active ? 'fg.0' : 'fg.2'}
           textStyle={active ? 'semibold-sm' : 'medium-sm'}
           _hover={{ color: 'fg.0', textDecoration: 'none' }}
-          _focusVisible={{ outline: 'none', boxShadow: 'none' }}
+          _focus={{ outlineWidth: '2px', outlineColor: 'blue.500', outlineOffset: '-2px' }}
+          _focusVisible={{ outlineWidth: '2px', outlineColor: 'blue.500', outlineOffset: '-2px' }}
         >
           <Link to={to}>
             {tab.label}
@@ -1121,9 +1127,10 @@ const RepositoriesTab = ({ repositories }: { readonly repositories: ReadonlyArra
           gap="3"
           alignItems="center"
           px="4.5"
-          py="3.5"
+          py="3"
           borderBottomWidth="1px"
-          borderColor="border.subtle"
+          borderColor="border"
+          _last={{ borderBottomWidth: '0' }}
           css={{ '@container (max-width: 860px)': { gridTemplateColumns: 'minmax(0, 1fr) 88px 88px' } }}
         >
           <HStack gap="3" minW="0">
@@ -1139,15 +1146,31 @@ const RepositoriesTab = ({ repositories }: { readonly repositories: ReadonlyArra
               </Text>
             </Stack>
           </HStack>
-          <Text textStyle="regular-xs" color="fg.1" css={{ '@container (max-width: 860px)': { display: 'none' } }}>
-            {repo.language}
-          </Text>
+          <HStack gap="2" minW="0" css={{ '@container (max-width: 860px)': { display: 'none' } }}>
+            <Box boxSize="2" borderRadius="full" bg="dot.running" flexShrink="0" />
+            <Text textStyle="regular-xs" color="fg.1" truncate>
+              {repo.language}
+            </Text>
+          </HStack>
           <Text className="mono tnum" textStyle="regular-xs" color="fg.1">
             {repo.branches}
           </Text>
-          <Text className="mono tnum" textStyle="regular-xs" color={repo.openPRs > 0 ? 'status.success.fg' : 'fg.3'}>
-            {repo.openPRs}
-          </Text>
+          <HStack
+            as="span"
+            h="7"
+            w="fit-content"
+            px="2"
+            gap="1"
+            borderRadius="pill"
+            borderWidth="1px"
+            borderColor="status.success.border"
+            bg="status.success.bg"
+            color="status.success.fg"
+            textStyle="medium-xs"
+          >
+            <GitPullRequest size={13} />
+            <Span className="mono tnum">{repo.openPRs}</Span>
+          </HStack>
           <Text
             className="mono tnum"
             textStyle="regular-xs"
@@ -1157,7 +1180,7 @@ const RepositoriesTab = ({ repositories }: { readonly repositories: ReadonlyArra
             {repo.commits}
           </Text>
           <Text textStyle="regular-xs" color="fg.3" css={{ '@container (max-width: 860px)': { display: 'none' } }}>
-            {absTime(repo.lastActivity)}
+            {relTime(repo.lastActivity)}
           </Text>
         </Grid>
       ))}
