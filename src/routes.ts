@@ -9,6 +9,7 @@ export default [
       route('graph-smoke', 'routes/RunGraphSmoke.tsx'),
       route(':runId', 'routes/RunDetail.tsx'),
     ]),
+    route('/projects', 'routes/Projects.tsx'),
     route('/inbox', 'routes/Inbox.tsx'),
     route('/inbox/:itemId', 'routes/InboxItem.tsx'),
     route('/method/roles', 'routes/MethodRoles.tsx'),

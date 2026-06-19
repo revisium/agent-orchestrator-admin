@@ -169,3 +169,43 @@ export interface PlaybookRow {
   readonly schemaVersion: string
   readonly installedAt: string
 }
+
+export type ProjectTone = 'amber' | 'teal' | 'plum' | 'system'
+
+export interface ProjectStats {
+  readonly runs: number
+  readonly adrs: number
+  readonly kb: number
+  readonly tables: number
+}
+
+export interface ProjectRow {
+  readonly id: string
+  readonly name: string
+  readonly key: string
+  readonly org: string
+  readonly tone: ProjectTone
+  readonly initials: string
+  readonly description: string
+  readonly owners: ReadonlyArray<string>
+  readonly defaultBranch: string
+  readonly headRev: string
+  readonly branches: number
+  readonly openPRs: number
+  readonly repos: ReadonlyArray<string>
+  readonly updatedAt: string
+  readonly stats: ProjectStats
+}
+
+export interface ProjectRepository {
+  readonly id: string
+  readonly projectId: string
+  readonly name: string
+  readonly description: string
+  readonly language: string
+  readonly defaultBranch: string
+  readonly branches: number
+  readonly openPRs: number
+  readonly lastActivity: string
+  readonly commits: number
+}

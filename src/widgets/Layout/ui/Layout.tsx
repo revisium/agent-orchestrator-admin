@@ -54,7 +54,7 @@ const NAV_ITEMS: ReadonlyArray<NavItem> = [
   { label: 'Dashboard', to: '/', match: '/', icon: LayoutDashboard },
   { label: 'Runs', to: '/runs', match: '/runs', icon: List },
   { label: 'Inbox', to: '/inbox', match: '/inbox', icon: Inbox, badge: PENDING_INBOX },
-  { label: 'Projects', to: '/projects', match: '/projects', icon: Folder, disabled: true },
+  { label: 'Projects', to: '/projects', match: '/projects', icon: Folder },
   { label: 'Method', to: '/method/roles', match: '/method', icon: Scan },
 ]
 
