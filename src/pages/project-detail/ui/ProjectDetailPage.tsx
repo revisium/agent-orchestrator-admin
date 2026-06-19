@@ -31,7 +31,7 @@ import {
   type ProjectRow,
   type ProjectTone,
 } from 'src/shared/fixtures'
-import { AvatarInitials, Card, EmptyState, FieldRow, StatusBadge, toneForStatus } from 'src/shared/ui'
+import { AvatarInitials, Card, EmptyState, StatusBadge, toneForStatus } from 'src/shared/ui'
 
 interface ProjectDetailPageProps {
   readonly projectId: string
@@ -757,14 +757,43 @@ const ActivityList = ({ events }: { readonly events: ReadonlyArray<ProjectActivi
   </Card>
 )
 
+const ProjectMetaRow = ({ label, children }: { readonly label: string; readonly children: ReactNode }) => (
+  <Grid
+    templateColumns="104px minmax(0, 1fr)"
+    gap="3"
+    alignItems="start"
+    py="2.5"
+    borderBottomWidth="1px"
+    borderColor="border.subtle"
+    _last={{ borderBottomWidth: '0' }}
+  >
+    <Text textStyle="regular-body" color="fg.2">
+      {label}
+    </Text>
+    <Box minW="0">
+      {typeof children === 'string' ? (
+        <Text textStyle="regular-body" color="fg.0" overflowWrap="anywhere">
+          {children}
+        </Text>
+      ) : (
+        children
+      )}
+    </Box>
+  </Grid>
+)
+
 const ProjectMeta = ({ project }: { readonly project: ProjectRow }) => (
   <Card>
     <Stack gap="3">
       <Text textStyle="semibold-sm" color="fg.0">
         Project
       </Text>
-      <FieldRow label="Key">{project.key}</FieldRow>
-      <FieldRow label="Owners">
+      <ProjectMetaRow label="Key">
+        <Text className="mono" textStyle="regular-xs" color="fg.0" lineHeight="1.45" overflowWrap="anywhere">
+          {project.key}
+        </Text>
+      </ProjectMetaRow>
+      <ProjectMetaRow label="Owners">
         <HStack gap="2" wrap="wrap">
           {project.owners.map((owner) => (
             <HStack key={owner} gap="1.5">
@@ -773,11 +802,11 @@ const ProjectMeta = ({ project }: { readonly project: ProjectRow }) => (
             </HStack>
           ))}
         </HStack>
-      </FieldRow>
-      <FieldRow label="Default branch">{project.defaultBranch}</FieldRow>
-      <FieldRow label="Head revision">{project.headRev}</FieldRow>
-      <FieldRow label="Open PRs">{project.openPRs}</FieldRow>
-      <FieldRow label="Updated">{absTime(project.updatedAt)}</FieldRow>
+      </ProjectMetaRow>
+      <ProjectMetaRow label="Default branch">{project.defaultBranch}</ProjectMetaRow>
+      <ProjectMetaRow label="Head revision">{project.headRev}</ProjectMetaRow>
+      <ProjectMetaRow label="Open PRs">{project.openPRs}</ProjectMetaRow>
+      <ProjectMetaRow label="Updated">{absTime(project.updatedAt)}</ProjectMetaRow>
     </Stack>
   </Card>
 )
