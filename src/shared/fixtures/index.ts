@@ -25,6 +25,8 @@ export type {
   ProjectRepository,
   ProjectAdr,
   ProjectKnowledgeArticle,
+  ProjectMemoryFact,
+  ProjectMemoryTable,
 } from './types'
 export {
   TASK_RUNS,
@@ -47,10 +49,12 @@ export {
   PROJECTS,
   PROJECT_ADRS,
   PROJECT_KNOWLEDGE,
+  PROJECT_MEMORY_TABLES,
   PROJECT_REPOSITORIES,
   RUN_PROJECT,
   adrsForProject,
   knowledgeForProject,
+  memoryForProject,
   projectById,
   reposForProject,
   runsForProject,

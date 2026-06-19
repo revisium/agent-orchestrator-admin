@@ -17,11 +17,13 @@ import {
   absTime,
   adrsForProject,
   knowledgeForProject,
+  memoryForProject,
   projectById,
   reposForProject,
   runsForProject,
   type ProjectAdr,
   type ProjectKnowledgeArticle,
+  type ProjectMemoryTable,
   type ProjectRepository,
   type ProjectRow,
   type ProjectTone,
@@ -40,6 +42,7 @@ interface DetailTab {
 }
 
 const RECENT_ADR_LIMIT = 3
+const MEMORY_PREVIEW_LIMIT = 2
 
 const projectToneStyles = (
   tone: ProjectTone,
@@ -329,6 +332,34 @@ const KnowledgeSourceBadge = ({ source }: { readonly source: ProjectKnowledgeArt
   </Span>
 )
 
+const MemoryKindBadge = ({ kind }: { readonly kind: ProjectMemoryTable['kind'] }) => {
+  const palette = {
+    decision: { fg: 'brand.ink', bg: 'brand.soft', border: 'brand.softBorder' },
+    domain: { fg: 'accent.role.fg', bg: 'accent.role.bg', border: 'accent.role.border' },
+    operational: { fg: 'status.running.fg', bg: 'status.running.bg', border: 'status.running.border' },
+    risk: { fg: 'status.failed.fg', bg: 'status.failed.bg', border: 'status.failed.border' },
+  }[kind]
+
+  return (
+    <Span
+      px="2"
+      h="5"
+      display="inline-flex"
+      alignItems="center"
+      borderRadius="chip"
+      borderWidth="1px"
+      color={palette.fg}
+      bg={palette.bg}
+      borderColor={palette.border}
+      textStyle="medium-xs"
+      textTransform="capitalize"
+      whiteSpace="nowrap"
+    >
+      {kind}
+    </Span>
+  )
+}
+
 const RepoList = ({ repositories }: { readonly repositories: ReadonlyArray<ProjectRepository> }) => (
   <Card p="0" overflow="hidden">
     {repositories.map((repo) => (
@@ -493,6 +524,134 @@ const KnowledgeList = ({ articles }: { readonly articles: ReadonlyArray<ProjectK
   </Grid>
 )
 
+const MemoryFactList = ({ table }: { readonly table: ProjectMemoryTable }) => (
+  <Stack gap="2">
+    {table.facts.map((fact) => (
+      <HStack key={fact.id} align="start" gap="2.5">
+        <Box w="1.5" h="1.5" mt="2" borderRadius="full" bg="dot.running" flexShrink="0" />
+        <Stack gap="0.5" minW="0">
+          <Text textStyle="regular-sm" color="fg.1" lineHeight="1.45">
+            {fact.text}
+          </Text>
+          <Text className="mono" textStyle="regular-micro" color="fg.3">
+            {fact.source} · {fact.sourceId}
+          </Text>
+        </Stack>
+      </HStack>
+    ))}
+  </Stack>
+)
+
+const MemoryList = ({
+  tables,
+  compact = false,
+}: {
+  readonly tables: ReadonlyArray<ProjectMemoryTable>
+  readonly compact?: boolean
+}) => (
+  <Grid templateColumns={{ base: '1fr', xl: compact ? '1fr' : 'repeat(2, minmax(0, 1fr))' }} gap="4">
+    {tables.length === 0 ? (
+      <Box gridColumn="1 / -1">
+        <EmptyState title="No memory tables yet" description="Project memory will appear once agents learn facts." />
+      </Box>
+    ) : (
+      tables.map((table) => (
+        <Card key={table.id} p="0" overflow="hidden">
+          <Stack gap="0">
+            <Box px="4.5" py="4" borderBottomWidth="1px" borderColor="border.subtle">
+              <HStack gap="3" align="start">
+                <Center
+                  boxSize="34px"
+                  borderRadius="8px"
+                  bg="bg.inset"
+                  borderWidth="1px"
+                  borderColor="border"
+                  color="fg.2"
+                  flexShrink="0"
+                >
+                  <Database size={16} />
+                </Center>
+                <Stack gap="1.5" minW="0" flex="1">
+                  <HStack gap="2" wrap="wrap">
+                    <MemoryKindBadge kind={table.kind} />
+                    <Text className="mono" textStyle="regular-xs" color="fg.3">
+                      {absTime(table.updatedAt)}
+                    </Text>
+                  </HStack>
+                  <Text className="mono" textStyle="semibold-sm" color="fg.0" truncate>
+                    {table.name}
+                  </Text>
+                  <Text textStyle="regular-sm" color="fg.2" lineHeight="1.5">
+                    {table.description}
+                  </Text>
+                </Stack>
+              </HStack>
+            </Box>
+            <Grid
+              templateColumns={{ base: 'repeat(2, minmax(0, 1fr))', md: 'repeat(4, minmax(0, 1fr))' }}
+              borderBottomWidth="1px"
+              borderColor="border.subtle"
+            >
+              <MemoryMetric label="Records" value={table.records} />
+              <MemoryMetric label="Owner" value={table.owner} />
+              <MemoryMetric label="Run" value={table.linkedRunId} to={`/runs/${table.linkedRunId}`} />
+              <MemoryMetric label="ADR" value={table.linkedAdrId.replace('adr_', '')} />
+            </Grid>
+            <Box px="4.5" py="4">
+              <MemoryFactList table={table} />
+              {compact ? null : (
+                <HStack gap="1.5" wrap="wrap" mt="3.5">
+                  {table.tags.map((tag) => (
+                    <TagPill key={tag}>{tag}</TagPill>
+                  ))}
+                </HStack>
+              )}
+            </Box>
+          </Stack>
+        </Card>
+      ))
+    )}
+  </Grid>
+)
+
+const MemoryMetric = ({
+  label,
+  value,
+  to,
+}: {
+  readonly label: string
+  readonly value: number | string
+  readonly to?: string
+}) => (
+  <Stack
+    gap="1"
+    px="3.5"
+    py="3"
+    borderRightWidth="1px"
+    borderBottomWidth={{ base: '1px', md: '0' }}
+    borderColor="border.subtle"
+  >
+    <Text color="fg.3" textStyle="regular-micro">
+      {label}
+    </Text>
+    {to ? (
+      <ChakraLink
+        asChild
+        className="mono"
+        color="fg.1"
+        textStyle="medium-xs"
+        _hover={{ color: 'brand.500', textDecoration: 'none' }}
+      >
+        <Link to={to}>{value}</Link>
+      </ChakraLink>
+    ) : (
+      <Text className={typeof value === 'number' ? 'mono tnum' : 'mono'} color="fg.1" textStyle="medium-xs" truncate>
+        {value}
+      </Text>
+    )}
+  </Stack>
+)
+
 const ProjectMeta = ({ project }: { readonly project: ProjectRow }) => (
   <Card>
     <Stack gap="3">
@@ -564,10 +723,12 @@ const OverviewTab = ({
   project,
   repositories,
   adrs,
+  memoryTables,
 }: {
   readonly project: ProjectRow
   readonly repositories: ReadonlyArray<ProjectRepository>
   readonly adrs: ReadonlyArray<ProjectAdr>
+  readonly memoryTables: ReadonlyArray<ProjectMemoryTable>
 }) => (
   <Grid templateColumns={{ base: '1fr', xl: 'minmax(0, 1.7fr) minmax(280px, 1fr)' }} gap="7" alignItems="start">
     <Stack gap="6">
@@ -584,6 +745,10 @@ const OverviewTab = ({
       <Box>
         <SectionHead title="Recent decisions" to={`/projects/${project.id}/adrs`} action="All ADRs" />
         <AdrList adrs={adrs.slice(0, RECENT_ADR_LIMIT)} compact />
+      </Box>
+      <Box>
+        <SectionHead title="Memory" to={`/projects/${project.id}/memory`} action="All tables" />
+        <MemoryList tables={memoryTables.slice(0, MEMORY_PREVIEW_LIMIT)} compact />
       </Box>
     </Stack>
     <Stack gap="5">
@@ -607,6 +772,13 @@ const KnowledgeTab = ({ articles }: { readonly articles: ReadonlyArray<ProjectKn
   <Stack gap="4">
     <SectionHead title="Knowledge base" />
     <KnowledgeList articles={articles} />
+  </Stack>
+)
+
+const MemoryTab = ({ tables }: { readonly tables: ReadonlyArray<ProjectMemoryTable> }) => (
+  <Stack gap="4">
+    <SectionHead title="Project memory" />
+    <MemoryList tables={tables} />
   </Stack>
 )
 
@@ -705,6 +877,7 @@ export const ProjectDetailPage = ({ projectId, tab }: ProjectDetailPageProps) =>
   const repositories = reposForProject(project.id)
   const adrs = adrsForProject(project.id)
   const articles = knowledgeForProject(project.id)
+  const memoryTables = memoryForProject(project.id)
   const activeTab = validTab(tab)
   const tabs = tabsForProject(project, repositories)
 
@@ -712,11 +885,13 @@ export const ProjectDetailPage = ({ projectId, tab }: ProjectDetailPageProps) =>
     <Stack gap="6">
       <DetailHeader project={project} />
       <DetailTabs project={project} tabs={tabs} activeTab={activeTab} />
-      {activeTab === 'overview' ? <OverviewTab project={project} repositories={repositories} adrs={adrs} /> : null}
+      {activeTab === 'overview' ? (
+        <OverviewTab project={project} repositories={repositories} adrs={adrs} memoryTables={memoryTables} />
+      ) : null}
       {activeTab === 'repositories' ? <RepositoriesTab repositories={repositories} /> : null}
       {activeTab === 'knowledge' ? <KnowledgeTab articles={articles} /> : null}
       {activeTab === 'adrs' ? <AdrsTab adrs={adrs} /> : null}
-      {activeTab === 'memory' ? <PlaceholderTab title="Memory" /> : null}
+      {activeTab === 'memory' ? <MemoryTab tables={memoryTables} /> : null}
       {activeTab === 'activity' ? <PlaceholderTab title="Activity" /> : null}
     </Stack>
   )

@@ -235,3 +235,25 @@ export interface ProjectKnowledgeArticle {
   readonly summary: string
   readonly tags: ReadonlyArray<string>
 }
+
+export interface ProjectMemoryFact {
+  readonly id: string
+  readonly text: string
+  readonly source: 'run' | 'adr' | 'manual'
+  readonly sourceId: string
+}
+
+export interface ProjectMemoryTable {
+  readonly id: string
+  readonly projectId: string
+  readonly name: string
+  readonly kind: 'domain' | 'decision' | 'operational' | 'risk'
+  readonly owner: string
+  readonly updatedAt: string
+  readonly records: number
+  readonly linkedRunId: string
+  readonly linkedAdrId: string
+  readonly description: string
+  readonly facts: ReadonlyArray<ProjectMemoryFact>
+  readonly tags: ReadonlyArray<string>
+}

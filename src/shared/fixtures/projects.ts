@@ -1,5 +1,12 @@
 import { TASK_RUNS } from './runs'
-import type { ProjectAdr, ProjectKnowledgeArticle, ProjectRepository, ProjectRow, TaskRun } from './types'
+import type {
+  ProjectAdr,
+  ProjectKnowledgeArticle,
+  ProjectMemoryTable,
+  ProjectRepository,
+  ProjectRow,
+  TaskRun,
+} from './types'
 
 export const PROJECTS: ReadonlyArray<ProjectRow> = [
   {
@@ -396,3 +403,252 @@ export const adrsForProject = (projectId: string): ReadonlyArray<ProjectAdr> =>
 
 export const knowledgeForProject = (projectId: string): ReadonlyArray<ProjectKnowledgeArticle> =>
   PROJECT_KNOWLEDGE.filter((article) => article.projectId === projectId)
+
+export const PROJECT_MEMORY_TABLES: ReadonlyArray<ProjectMemoryTable> = [
+  {
+    id: 'mem_orch_attempt_lessons',
+    projectId: 'prj_orch',
+    name: 'attempt_lessons',
+    kind: 'operational',
+    owner: 'orchestrator',
+    updatedAt: '2026-06-14T09:20:00Z',
+    records: 18,
+    linkedRunId: 'run_0f12',
+    linkedAdrId: 'adr_orch_review_gate',
+    description: 'Reusable lessons extracted from failed developer and reviewer loops.',
+    facts: [
+      {
+        id: 'fact_attempt_release_notes',
+        text: 'Release notes must be wired as a first-class step before reviewer handoff.',
+        source: 'run',
+        sourceId: 'run_0f12',
+      },
+      {
+        id: 'fact_attempt_short_reason',
+        text: 'Failed attempts keep one concise reason and one reusable next-pass lesson.',
+        source: 'adr',
+        sourceId: 'adr_orch_review_gate',
+      },
+    ],
+    tags: ['attempts', 'review'],
+  },
+  {
+    id: 'mem_orch_project_scope',
+    projectId: 'prj_orch',
+    name: 'project_scope',
+    kind: 'domain',
+    owner: 'kap',
+    updatedAt: '2026-06-14T08:55:00Z',
+    records: 24,
+    linkedRunId: 'run_8f2a',
+    linkedAdrId: 'adr_orch_sidebar_project_switcher',
+    description: 'Project boundaries, owned repositories, and navigation rules for the admin UI.',
+    facts: [
+      {
+        id: 'fact_scope_grouping',
+        text: 'Project pages group repos, ADRs, knowledge, memory, and recent runs under one workspace.',
+        source: 'manual',
+        sourceId: 'kb_orch_project_scope',
+      },
+      {
+        id: 'fact_scope_control_plane',
+        text: 'Control plane remains a system project and links back to Method surfaces.',
+        source: 'adr',
+        sourceId: 'adr_orch_sidebar_project_switcher',
+      },
+    ],
+    tags: ['projects', 'navigation'],
+  },
+  {
+    id: 'mem_orch_ui_tokens',
+    projectId: 'prj_orch',
+    name: 'ui_visual_contract',
+    kind: 'decision',
+    owner: 'kap',
+    updatedAt: '2026-06-13T13:10:00Z',
+    records: 31,
+    linkedRunId: 'run_4c71',
+    linkedAdrId: 'adr_orch_admin_boundary',
+    description: 'Visual conventions carried across dashboard, runs, inbox, method, and project detail.',
+    facts: [
+      {
+        id: 'fact_ui_chakra_tokens',
+        text: 'Use Chakra props and system tokens; no color-mode toggle in this admin UI.',
+        source: 'manual',
+        sourceId: 'repo_admin',
+      },
+      {
+        id: 'fact_ui_dense',
+        text: 'Operational screens favor scan density over marketing composition.',
+        source: 'adr',
+        sourceId: 'adr_orch_admin_boundary',
+      },
+    ],
+    tags: ['frontend', 'tokens'],
+  },
+  {
+    id: 'mem_orch_risks',
+    projectId: 'prj_orch',
+    name: 'integration_risks',
+    kind: 'risk',
+    owner: 'orchestrator',
+    updatedAt: '2026-06-13T12:05:00Z',
+    records: 9,
+    linkedRunId: 'run_4c71',
+    linkedAdrId: 'adr_orch_admin_boundary',
+    description: 'Known integration risks before the backend client and project API contract exist.',
+    facts: [
+      {
+        id: 'fact_risk_no_client',
+        text: 'Admin UI must not import @revisium/client or perform network calls yet.',
+        source: 'adr',
+        sourceId: 'adr_orch_admin_boundary',
+      },
+      {
+        id: 'fact_risk_fixture_shape',
+        text: 'Fixture shape should stay close to planned API rows to reduce migration churn.',
+        source: 'manual',
+        sourceId: 'kb_orch_project_scope',
+      },
+    ],
+    tags: ['boundary', 'api'],
+  },
+  {
+    id: 'mem_schema_contracts',
+    projectId: 'prj_schema',
+    name: 'schema_contracts',
+    kind: 'domain',
+    owner: 'kap',
+    updatedAt: '2026-06-11T08:35:00Z',
+    records: 16,
+    linkedRunId: 'run_1d09',
+    linkedAdrId: 'adr_schema_json_contract',
+    description: 'Canonical schema metadata and generated JSON column constraints.',
+    facts: [
+      {
+        id: 'fact_schema_source',
+        text: 'JSON column metadata is generated from schema-toolkit.',
+        source: 'adr',
+        sourceId: 'adr_schema_json_contract',
+      },
+      {
+        id: 'fact_schema_fixture_parity',
+        text: 'Golden fixtures verify generated metadata across toolkit and Prisma packages.',
+        source: 'run',
+        sourceId: 'run_1d09',
+      },
+    ],
+    tags: ['schema', 'columns'],
+  },
+  {
+    id: 'mem_schema_formula',
+    projectId: 'prj_schema',
+    name: 'formula_runtime',
+    kind: 'decision',
+    owner: 'orchestrator',
+    updatedAt: '2026-06-11T08:40:00Z',
+    records: 11,
+    linkedRunId: 'run_a35e',
+    linkedAdrId: 'adr_schema_formula_determinism',
+    description: 'Allowed inputs, deterministic operators, and runtime error reporting for formulas.',
+    facts: [
+      {
+        id: 'fact_formula_no_clock',
+        text: 'Computed fields cannot depend on wall-clock or network data.',
+        source: 'adr',
+        sourceId: 'adr_schema_formula_determinism',
+      },
+      {
+        id: 'fact_formula_errors',
+        text: 'Formula errors should report the field path and deterministic input snapshot.',
+        source: 'manual',
+        sourceId: 'kb_schema_formula',
+      },
+    ],
+    tags: ['formula', 'runtime'],
+  },
+  {
+    id: 'mem_schema_migrations',
+    projectId: 'prj_schema',
+    name: 'migration_order',
+    kind: 'operational',
+    owner: 'kap',
+    updatedAt: '2026-06-11T08:45:00Z',
+    records: 7,
+    linkedRunId: 'run_1d09',
+    linkedAdrId: 'adr_schema_json_contract',
+    description: 'Cross-repo migration order for schema-toolkit, Prisma generator, and formula.',
+    facts: [
+      {
+        id: 'fact_migration_order',
+        text: 'Update schema-toolkit first, then generator, then formula consumers.',
+        source: 'manual',
+        sourceId: 'kb_schema_migrations',
+      },
+      {
+        id: 'fact_migration_tests',
+        text: 'Run fixture parity tests before release notes are drafted.',
+        source: 'run',
+        sourceId: 'run_1d09',
+      },
+    ],
+    tags: ['migration', 'release'],
+  },
+  {
+    id: 'mem_strategy_questions',
+    projectId: 'prj_strategy',
+    name: 'open_questions',
+    kind: 'domain',
+    owner: 'kap',
+    updatedAt: '2026-06-13T11:52:00Z',
+    records: 12,
+    linkedRunId: 'run_6b88',
+    linkedAdrId: 'adr_strategy_headless_ui',
+    description: 'Unresolved product and platform questions read before architecture planning.',
+    facts: [
+      {
+        id: 'fact_questions_before_plan',
+        text: 'Architect role reads unresolved strategy questions before proposing a plan.',
+        source: 'manual',
+        sourceId: 'kb_strategy_questions',
+      },
+      {
+        id: 'fact_questions_ui_surface',
+        text: 'Versioned UI is treated as an operational product surface.',
+        source: 'adr',
+        sourceId: 'adr_strategy_headless_ui',
+      },
+    ],
+    tags: ['planning', 'strategy'],
+  },
+  {
+    id: 'mem_strategy_names',
+    projectId: 'prj_strategy',
+    name: 'canonical_names',
+    kind: 'decision',
+    owner: 'kap',
+    updatedAt: '2026-06-13T11:55:00Z',
+    records: 8,
+    linkedRunId: 'run_6b88',
+    linkedAdrId: 'adr_strategy_headless_ui',
+    description: 'Canonical naming for method, memory, control plane, project, and run attempts.',
+    facts: [
+      {
+        id: 'fact_names_attempts',
+        text: 'Attempt rows represent per-step retries and lessons, not whole-run restarts.',
+        source: 'manual',
+        sourceId: 'kb_strategy_naming',
+      },
+      {
+        id: 'fact_names_memory',
+        text: 'Project memory stores reusable domain facts rather than raw logs.',
+        source: 'manual',
+        sourceId: 'kb_strategy_naming',
+      },
+    ],
+    tags: ['naming', 'docs'],
+  },
+]
+
+export const memoryForProject = (projectId: string): ReadonlyArray<ProjectMemoryTable> =>
+  PROJECT_MEMORY_TABLES.filter((table) => table.projectId === projectId)
