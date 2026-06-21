@@ -29,7 +29,7 @@ function loadLocalEnv(mode) {
 const env = { ...loadLocalEnv(process.env.NODE_ENV ?? 'development'), ...process.env }
 
 const config = {
-  revoCli: env.REVO_CLI ?? resolve(repoRoot, '../agent-orchestrator/bin/revo.js'),
+  revoCli: resolve(repoRoot, env.REVO_CLI ?? '../agent-orchestrator/bin/revo.js'),
   dataDir: resolve(repoRoot, env.REVO_DEV_DATA_DIR ?? '.revo/dev'),
   controlPort: env.REVO_DEV_PORT ?? '19322',
   graphqlPort: env.REVO_DEV_GRAPHQL_PORT ?? '19323',
