@@ -11,12 +11,67 @@ pnpm run verify
 `verify` runs the gates in order and fails fast:
 
 1. `format:check` — `prettier --check` over ts/tsx/js/json/md/yml/yaml/css/html.
-2. `ts:check` — `tsc --noEmit` (strict).
-3. `lint:ci` — `eslint "{src,tests}/**/*.{ts,tsx}" --max-warnings 0`
+2. `gql:codegen:check` — regenerate the typed GraphQL SDK from the checked-in
+   schema snapshot and fail on drift in `src/__generated__/graphql-request.ts`.
+3. `ts:check` — `tsc --noEmit` (strict).
+4. `lint:ci` — `eslint "{src,tests}/**/*.{ts,tsx}" --max-warnings 0`
    (zero warnings allowed).
-4. `fsd:check` — `steiger src` (Feature-Sliced Design boundary checks).
-5. `test:unit` — `vitest run`.
-6. `build` — `react-router build`; must produce `build/server` and `build/client`.
+5. `fsd:check` — `steiger src` (Feature-Sliced Design boundary checks).
+6. `test:unit` — `vitest run`.
+7. `build` — `react-router build`; must produce `build/server` and `build/client`.
+
+## GraphQL checks
+
+Run after any schema, operation, service, or view-model change:
+
+```bash
+pnpm run gql:codegen
+pnpm run gql:codegen:check
+pnpm run test:unit -- tests/graphql-system.spec.ts
+```
+
+Schema snapshot refresh against a running local GraphQL host:
+
+```bash
+pnpm run backend:start
+pnpm run backend:serve
+pnpm run gql:codegen:download
+pnpm run gql:codegen
+```
+
+The default download endpoint is `http://127.0.0.1:19323/graphql`. Override with
+`REVO_ADMIN_GRAPHQL_ENDPOINT` when testing another host.
+
+## Frontend MVVM checks
+
+This repo uses React + MobX + MVVM + DI + FSD. Use the approved references in
+`AGENTS.md` when changing UI, state, services, or generated GraphQL code.
+
+Expected local coverage by surface:
+
+- React-only presentational change: `pnpm run ts:check`, `pnpm run lint:ci`,
+  `pnpm run fsd:check`, and `pnpm run build`; add browser/manual smoke when
+  layout, interaction, or SSR visibility changes.
+- MobX view-model change: targeted `vitest` coverage for loading, success,
+  error, actions, and derived state, then `pnpm run test:unit`.
+- Service or GraphQL client change: generated SDK drift check plus unit coverage
+  at the service boundary; do not mock private internals.
+- FSD boundary or DI composition change: `pnpm run fsd:check` plus targeted
+  unit tests proving dependencies can be replaced at constructor/composition
+  boundaries.
+- User-visible workflow change: run the aggregate `pnpm run verify`; add local
+  backend/browser smoke when GraphQL, routing, websocket, or SSR behavior is
+  involved.
+
+Quality blockers:
+
+- React components directly calling generated GraphQL SDK methods.
+- JSX components owning loading/error/retry behavior that belongs in a view
+  model.
+- View models doing raw GraphQL transport or environment parsing instead of
+  delegating to services.
+- Services importing React or Chakra UI.
+- Generated artifacts changed without `gql:codegen:check`.
 
 ## CI gates (`.github/workflows/ci.yml`)
 
@@ -28,6 +83,8 @@ pnpm run verify
 
 - Do not loosen `--max-warnings 0`, disable Sonar in CI, or relax Steiger rules
   beyond `fsd/insignificant-slice`.
+- Do not hand-edit files in `src/__generated__`; update the schema or `.graphql`
+  documents and rerun codegen.
 - Install must be peer-clean; do not use `--legacy-peer-deps`.
 - Local SonarCloud runs: copy `.env.sonar.example` to `.env.sonar`, then
   `pnpm run sonar:local` / `pnpm run sonar:issues:local` (requires Docker).
