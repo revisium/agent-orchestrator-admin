@@ -58,6 +58,33 @@ REVO_ADMIN_GRAPHQL_TARGET=http://127.0.0.1:19423 pnpm run dev
 REVO_DEV_KEEP_BACKEND=1 pnpm run dev:full
 ```
 
+## GraphQL client development
+
+GraphQL schema and operation types are checked in:
+
+- `src/__generated__/schema.graphql` — schema snapshot from `orchestrator`;
+- `src/shared/api/**/*.graphql` — hand-written operations;
+- `src/__generated__/graphql-request.ts` — generated typed SDK.
+
+Update the generated SDK after editing operations:
+
+```sh
+pnpm run gql:codegen
+```
+
+Refresh the schema snapshot from a running local backend:
+
+```sh
+pnpm run backend:start
+pnpm run backend:serve
+pnpm run gql:codegen:download
+pnpm run gql:codegen
+```
+
+React components should not call the generated SDK directly. Use
+`src/shared/api/graphql` for transport, then expose data through services and
+MobX view models registered in `src/shared/lib/DIContainer`.
+
 ## Common scripts
 
 - `pnpm run dev` — start the React Router dev server.
@@ -65,6 +92,8 @@ REVO_DEV_KEEP_BACKEND=1 pnpm run dev:full
 - `pnpm run backend:start` — start and bootstrap the repo-local Revisium daemon.
 - `pnpm run backend:serve` — start GraphQL HTTP + websocket host.
 - `pnpm run backend:stop` — stop the repo-local Revisium daemon.
+- `pnpm run gql:codegen` — regenerate GraphQL SDK from checked-in schema and operations.
+- `pnpm run gql:codegen:download` — refresh `src/__generated__/schema.graphql` from backend.
 - `pnpm run build` — production SSR build (`build/server` + `build/client`).
 - `pnpm run start` — serve the production build.
 - `pnpm run verify` — full local gate (format, types, lint, FSD, tests, build).
