@@ -7,7 +7,7 @@ interface GraphqlSubscriptionServiceOptions {
   readonly client?: Client
   readonly origin?: string
   readonly url?: string
-  readonly connectionParams?: ClientOptions['connectionParams']
+  readonly connectionParams?: NonNullable<ClientOptions['connectionParams']>
 }
 
 export interface GraphqlSubscriptionSink<TData> {

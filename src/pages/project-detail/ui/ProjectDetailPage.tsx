@@ -233,7 +233,7 @@ const DetailTabs = ({
         >
           <Link to={to}>
             {tab.label}
-            {tab.count !== undefined ? (
+            {tab.count === undefined ? null : (
               <Span
                 className="mono tnum"
                 minW="5"
@@ -249,7 +249,7 @@ const DetailTabs = ({
               >
                 {tab.count}
               </Span>
-            ) : null}
+            )}
           </Link>
         </ChakraLink>
       )
