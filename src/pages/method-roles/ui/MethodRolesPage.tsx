@@ -1,15 +1,22 @@
 import { Stack } from '@chakra-ui/react'
-import { PageHeader } from 'src/shared/ui'
+import { MethodTabs } from 'src/features/MethodTabs'
+import { PageHeader, SchemaV2Action } from 'src/shared/ui'
 import { ROLES } from 'src/shared/fixtures'
 import { RolesList } from 'src/widgets/RolesList'
 
-export const MethodRolesPage = () => (
-  <Stack gap="6" maxW="800px">
+interface MethodRolesPageProps {
+  readonly selectedRoleId?: string
+}
+
+export const MethodRolesPage = ({ selectedRoleId }: MethodRolesPageProps) => (
+  <Stack gap="6">
     <PageHeader
       eyebrow="The method"
-      title="Roles"
-      description="Versioned role definitions the orchestrator routes work to."
+      title="Method"
+      description="Typed, versioned definitions that govern every run — pipelines, roles, and installed playbooks."
+      actions={<SchemaV2Action />}
     />
-    <RolesList roles={ROLES} />
+    <MethodTabs active="roles" />
+    <RolesList roles={ROLES} selectedRoleId={selectedRoleId} />
   </Stack>
 )

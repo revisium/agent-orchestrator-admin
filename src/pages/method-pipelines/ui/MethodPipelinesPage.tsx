@@ -1,15 +1,22 @@
 import { Stack } from '@chakra-ui/react'
-import { PageHeader } from 'src/shared/ui'
+import { MethodTabs } from 'src/features/MethodTabs'
+import { PageHeader, SchemaV2Action } from 'src/shared/ui'
 import { PIPELINES } from 'src/shared/fixtures'
 import { PipelinesList } from 'src/widgets/PipelinesList'
 
-export const MethodPipelinesPage = () => (
-  <Stack gap="6" maxW="800px">
+interface MethodPipelinesPageProps {
+  readonly selectedPipelineId?: string
+}
+
+export const MethodPipelinesPage = ({ selectedPipelineId }: MethodPipelinesPageProps) => (
+  <Stack gap="6">
     <PageHeader
       eyebrow="The method"
-      title="Pipelines"
-      description="Imported pipeline definitions: triggers, roles, and route gates."
+      title="Method"
+      description="Typed, versioned definitions that govern every run — pipelines, roles, and installed playbooks."
+      actions={<SchemaV2Action />}
     />
-    <PipelinesList pipelines={PIPELINES} />
+    <MethodTabs active="pipelines" />
+    <PipelinesList pipelines={PIPELINES} selectedPipelineId={selectedPipelineId} />
   </Stack>
 )
