@@ -11,9 +11,11 @@ import {
   Pause,
   RotateCcw,
   Sparkles,
+  TriangleAlert,
   Zap,
   type LucideIcon,
 } from 'lucide-react'
+import type { ReactNode } from 'react'
 import { Link } from 'react-router'
 import { RunProgressGraph } from 'src/features/RunProgressGraph'
 import {
@@ -186,7 +188,14 @@ const RunSummaryStrip = ({ run, steps }: { readonly run: TaskRun; readonly steps
     {summaryCells(run, steps).map((cell) => {
       const Icon = cell.icon
       return (
-        <Stack key={cell.id} gap="1.5" p="4" borderRightWidth={{ xl: '1px' }} borderColor="border.subtle">
+        <Stack
+          key={cell.id}
+          gap="1.5"
+          p="4"
+          borderRightWidth={{ xl: '1px' }}
+          borderColor="border"
+          _last={{ borderRightWidth: '0' }}
+        >
           <HStack gap="1.5" color="fg.2" textStyle="regular-xs">
             <Icon size={13} />
             <Text>{cell.label}</Text>
@@ -364,20 +373,104 @@ const PipelineTab = ({ steps }: { readonly steps: ReadonlyArray<RunDetailStep> }
   </Grid>
 )
 
+const ATTEMPT_COLUMNS = '56px minmax(0, 1.4fr) 120px minmax(0, 1.5fr) 168px 80px'
+
+const attemptGridCss = {
+  '@container (max-width: 820px)': { gridTemplateColumns: '48px minmax(0, 1fr) 116px 84px' },
+  '@container (max-width: 520px)': { gridTemplateColumns: '44px minmax(0, 1fr) 92px' },
+} as const
+
+const modelColumnCss = { '@container (max-width: 820px)': { display: 'none' } } as const
+
+const tokensColumnCss = { '@container (max-width: 820px)': { display: 'none' } } as const
+
+const costColumnCss = { '@container (max-width: 520px)': { display: 'none' } } as const
+
+const AttemptTableHeader = () => (
+  <Grid
+    templateColumns={ATTEMPT_COLUMNS}
+    gap="3"
+    alignItems="center"
+    h="40px"
+    px="4.5"
+    bg="bg.inset"
+    borderBottomWidth="1px"
+    borderColor="border"
+    css={attemptGridCss}
+  >
+    <AttemptHeaderCell>#</AttemptHeaderCell>
+    <AttemptHeaderCell>Step</AttemptHeaderCell>
+    <AttemptHeaderCell>Verdict</AttemptHeaderCell>
+    <AttemptHeaderCell css={modelColumnCss}>Model</AttemptHeaderCell>
+    <AttemptHeaderCell css={tokensColumnCss}>Tokens (in / out)</AttemptHeaderCell>
+    <AttemptHeaderCell css={costColumnCss} textAlign="right">
+      Cost
+    </AttemptHeaderCell>
+  </Grid>
+)
+
+const AttemptHeaderCell = ({
+  children,
+  css,
+  textAlign = 'left',
+}: {
+  readonly children: ReactNode
+  readonly css?: Record<string, unknown>
+  readonly textAlign?: 'left' | 'right'
+}) => (
+  <Text
+    textStyle="semibold-sm"
+    color="fg.3"
+    fontSize="11.5px"
+    textTransform="uppercase"
+    letterSpacing=".04em"
+    textAlign={textAlign}
+    css={css}
+  >
+    {children}
+  </Text>
+)
+
 const AttemptNote = ({ attempt }: { readonly attempt: Attempt }) => {
   if (!attempt.error && !attempt.lesson) return null
 
   return (
-    <Stack gap="1.5" px="4" pb="3" color="fg.2" textStyle="regular-xs">
+    <Stack
+      gap="2"
+      mx="4.5"
+      mb="3.5"
+      px="3.5"
+      py="3"
+      bg="bg.inset"
+      borderWidth="1px"
+      borderColor="border"
+      borderRadius="9px"
+      color="fg.1"
+      textStyle="regular-xs"
+    >
       {attempt.error ? (
-        <HStack gap="2" color="status.failed.fg">
+        <HStack gap="2" align="flex-start" color="status.failed.fg">
+          <TriangleAlert size={13} />
           <Text>{attempt.error}</Text>
         </HStack>
       ) : null}
       {attempt.lesson ? (
-        <HStack gap="2">
-          <Span px="1.5" py="0.5" borderRadius="5px" bg="bg.inset" color="fg.3" textStyle="regular-micro">
-            lesson
+        <HStack gap="2" align="baseline">
+          <Span
+            px="1.5"
+            py="0.5"
+            borderRadius="4px"
+            bg="status.waiting.bg"
+            borderWidth="1px"
+            borderColor="status.waiting.border"
+            color="status.waiting.fg"
+            fontSize="10px"
+            fontWeight="700"
+            textTransform="uppercase"
+            letterSpacing=".06em"
+            flexShrink="0"
+          >
+            Lesson
           </Span>
           <Text>{attempt.lesson}</Text>
         </HStack>
@@ -389,38 +482,29 @@ const AttemptNote = ({ attempt }: { readonly attempt: Attempt }) => {
 const AttemptsTab = () => (
   <Box containerType="inline-size">
     <Card p="0" overflow="hidden">
+      <AttemptTableHeader />
       {RUN_ATTEMPTS.map((attempt) => (
-        <Box key={attempt.id} borderBottomWidth="1px" borderColor="border.subtle" _last={{ borderBottomWidth: '0' }}>
-          <Grid templateColumns="56px minmax(0, 1.3fr) 120px 96px 152px 80px" gap="3" alignItems="center" px="4" py="3">
+        <Box key={attempt.id} bg="bg.1" borderBottomWidth="1px" borderColor="border" _last={{ borderBottomWidth: '0' }}>
+          <Grid templateColumns={ATTEMPT_COLUMNS} gap="3" alignItems="center" px="4.5" py="3.5" css={attemptGridCss}>
             <Text className="mono tnum" textStyle="medium-xs" color="fg.3">
               #{attempt.attemptNo}
             </Text>
-            <HStack gap="2" minW="0">
+            <HStack gap="2.5" minW="0">
               <RoleToken name={attempt.stepLabel} size={24} />
               <Text textStyle="medium-sm" color="fg.0" truncate>
                 {attempt.stepLabel}
               </Text>
             </HStack>
-            <Box css={{ '@container (max-width: 560px)': { display: 'none' } }}>
+            <Box>
               <StatusBadge status={attempt.status} size="sm" />
             </Box>
-            <Text
-              className="mono"
-              textStyle="regular-xs"
-              color="fg.2"
-              css={{ '@container (max-width: 720px)': { display: 'none' } }}
-            >
+            <Text className="mono" textStyle="regular-xs" color="fg.1" truncate css={modelColumnCss}>
               {attempt.modelProfile}
             </Text>
-            <Text
-              className="mono tnum"
-              textStyle="regular-xs"
-              color="fg.2"
-              css={{ '@container (max-width: 840px)': { display: 'none' } }}
-            >
-              {formatTokens(attempt.inputTokens)} / {formatTokens(attempt.outputTokens)}
+            <Text className="mono tnum" textStyle="regular-xs" color="fg.1" css={tokensColumnCss}>
+              {formatTokens(attempt.inputTokens)} <Span color="fg.3">/</Span> {formatTokens(attempt.outputTokens)}
             </Text>
-            <Text className="mono tnum" textStyle="medium-sm" color="fg.1" textAlign="right">
+            <Text className="mono tnum" textStyle="medium-sm" color="fg.0" textAlign="right" css={costColumnCss}>
               {formatRunCost(attempt.costAmount)}
             </Text>
           </Grid>

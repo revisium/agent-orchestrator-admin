@@ -1,13 +1,13 @@
 import { print, type DocumentNode } from 'graphql'
 import { createClient, type Client, type ClientOptions } from 'graphql-ws'
-import { container } from 'src/shared/lib'
+import { container } from 'src/shared/lib/DIContainer'
 import { resolveGraphqlWsUrl } from './endpoints'
 
 interface GraphqlSubscriptionServiceOptions {
   readonly client?: Client
   readonly origin?: string
   readonly url?: string
-  readonly connectionParams?: ClientOptions['connectionParams']
+  readonly connectionParams?: NonNullable<ClientOptions['connectionParams']>
 }
 
 export interface GraphqlSubscriptionSink<TData> {

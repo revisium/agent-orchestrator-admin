@@ -169,3 +169,106 @@ export interface PlaybookRow {
   readonly schemaVersion: string
   readonly installedAt: string
 }
+
+export type ProjectTone = 'amber' | 'teal' | 'plum' | 'system'
+
+export interface ProjectStats {
+  readonly runs: number
+  readonly adrs: number
+  readonly kb: number
+  readonly tables: number
+}
+
+export interface ProjectRow {
+  readonly id: string
+  readonly name: string
+  readonly key: string
+  readonly org: string
+  readonly tone: ProjectTone
+  readonly initials: string
+  readonly description: string
+  readonly owners: ReadonlyArray<string>
+  readonly defaultBranch: string
+  readonly headRev: string
+  readonly branches: number
+  readonly openPRs: number
+  readonly repos: ReadonlyArray<string>
+  readonly updatedAt: string
+  readonly stats: ProjectStats
+}
+
+export interface ProjectRepository {
+  readonly id: string
+  readonly projectId: string
+  readonly name: string
+  readonly description: string
+  readonly language: string
+  readonly defaultBranch: string
+  readonly branches: number
+  readonly openPRs: number
+  readonly lastActivity: string
+  readonly commits: number
+}
+
+export interface ProjectAdr {
+  readonly id: string
+  readonly projectId: string
+  readonly number: number
+  readonly title: string
+  readonly status: 'accepted' | 'proposed' | 'superseded'
+  readonly owner: string
+  readonly createdAt: string
+  readonly repo: string
+  readonly runId: string
+  readonly summary: string
+  readonly tags: ReadonlyArray<string>
+}
+
+export interface ProjectKnowledgeArticle {
+  readonly id: string
+  readonly projectId: string
+  readonly title: string
+  readonly source: 'method' | 'repo' | 'run' | 'memory'
+  readonly category?: 'architecture' | 'product' | 'runners'
+  readonly status?: 'committed' | 'in-review' | 'draft'
+  readonly version?: number
+  readonly owner: string
+  readonly updatedAt: string
+  readonly repo: string
+  readonly summary: string
+  readonly tags: ReadonlyArray<string>
+}
+
+export interface ProjectMemoryFact {
+  readonly id: string
+  readonly text: string
+  readonly source: 'run' | 'adr' | 'manual'
+  readonly sourceId: string
+}
+
+export interface ProjectMemoryTable {
+  readonly id: string
+  readonly projectId: string
+  readonly name: string
+  readonly kind: 'domain' | 'decision' | 'operational' | 'risk'
+  readonly owner: string
+  readonly updatedAt: string
+  readonly records: number
+  readonly linkedRunId: string
+  readonly linkedAdrId: string
+  readonly description: string
+  readonly facts: ReadonlyArray<ProjectMemoryFact>
+  readonly tags: ReadonlyArray<string>
+}
+
+export interface ProjectActivityEvent {
+  readonly id: string
+  readonly projectId: string
+  readonly kind: 'run' | 'adr' | 'knowledge' | 'memory' | 'repo'
+  readonly title: string
+  readonly actor: string
+  readonly createdAt: string
+  readonly summary: string
+  readonly target: string
+  readonly runId?: string
+}
